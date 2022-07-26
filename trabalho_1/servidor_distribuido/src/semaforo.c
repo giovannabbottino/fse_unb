@@ -1,14 +1,33 @@
 #include "semaforo.h"
 
 
-void configuraSemaforo(int *leds, int botao){
-    wiringPiSetup();
+struct semaforo {
+    int leds[3];
+    int botao;
+    int sensor_passagem;
+    int sensores_velocidade[2];
+};
+
+Semaforo * configuraSemaforo(int * leds, int botao, int sensor_passagem, int * sensor_velocidade){
+    Semaforo * semaforo = (Semaforo *) malloc(sizeof(Semaforo));
+    semaforo->leds = leds;
+    semaforo->botao = botao;
+    semaforo->sensor_passagem = sensor_passagem;
+    semaforo->sensores_velocidade = sensor_velocidade;
+
+    pinMode(semaforo->botao, INPUT);
+
+    pinMode(semaforo->sensor_passagem, INPUT);
 
     for (int i=0; i<3; i++){
-        pinMode(leds[i], OUTPUT);
+        pinMode(semaforo->leds[i], OUTPUT);
+    }
+    
+    for (int i=0; i<2; i++){
+        pinMode(cruzamento->sensores_velocidade[i], INPUT);
     }
 
-    pinMode(botao, INPUT);
+    return semaforo;
 }
 
 void verdeParaVermelho(int * leds){

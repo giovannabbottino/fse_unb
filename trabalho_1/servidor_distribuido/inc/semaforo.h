@@ -26,6 +26,9 @@
 
 #define DELAY_VERMELHO_TOTAL 100
 
+
+typedef struct semaforo Semaforo;
+
 void verdeParaVermelho(int * leds);
 
 void vermelhoParaVerde(int * leds);
@@ -34,6 +37,6 @@ void ligarLed(int led);
 
 void desligarLed(int led);
 
-void configuraSemaforo(int *leds, int botao);
+Semaforo * configuraSemaforo(int * leds, int botao, int sensor_passagem, int * sensor_velocidade);
 
 #endif

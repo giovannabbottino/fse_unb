@@ -7,7 +7,7 @@ SRCFOLDER := src/
 # .o
 OBJFOLDER := obj/
 CC := gcc
-CFLAGS := -W -Wall -ansi -lwiringPi -lpthread  -std=gnu11 
+CFLAGS := -W -Wall -ansi -lwiringPi -lpthread  -std=gnu11 -Wimplicit-function-declaration -Wunused-parameter 
 SRCFILES := $(wildcard src/*.c)
 all: $(SRCFILES:src/%.c=obj/%.o)
 	$(CC) $(CFLAGS) obj/*.o -o bin/prog
