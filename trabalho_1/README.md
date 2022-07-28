@@ -51,9 +51,23 @@ Sendo a porta um inteiro entre 10161 e 10170, de acordo com o que foi disponibil
 
 ## Info para o desenvolvimento
 ```
+git config user.name "giovannabbottino"
+git config user.email giovannabbottino@gmail.com
+
 rasp43 (Cruzamentos 1 e 2):
 ssh <user>@164.41.98.17 -p 13508
 
 rasp44 (Cruzamentos 1 e 2):
 ssh <user>@164.41.98.26 -p 13508
+
+rasp43 -> Dashboard do Cruzamento 1
+rasp44 -> Dashboard do Cruzamento 3
+
+Para tocar o áudio basta usar o comando 
+
+
+omxplayer example.mp3
+ 
+
+No shell
 ```
