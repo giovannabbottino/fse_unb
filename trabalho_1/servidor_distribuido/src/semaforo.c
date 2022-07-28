@@ -1,36 +1,31 @@
 #include "semaforo.h"
+#include "info.h"
 
-
-struct semaforo {
-    int leds[3];
-    int botao;
-    int sensor_passagem;
-    int sensores_velocidade[2];
-};
-
-struct semaforo * configuraSemaforo(int * leds, int botao, int sensor_passagem, int * sensor_velocidade){
-    struct semaforo * semaforo = (semaforo *) malloc(sizeof(semaforo));
-    semaforo->leds = leds;
+Semaforo * configuraSemaforo(int leds[], int botao, int sensor_passagem, int sensor_velocidade[]){
+    Semaforo * semaforo = (Semaforo *) malloc(sizeof(Semaforo));
     semaforo->botao = botao;
     semaforo->sensor_passagem = sensor_passagem;
-    semaforo->sensores_velocidade = sensor_velocidade;
+
+    wiringPiSetup();
 
     pinMode(semaforo->botao, INPUT);
 
     pinMode(semaforo->sensor_passagem, INPUT);
 
     for (int i=0; i<3; i++){
+        semaforo->leds[i] = leds[i];
         pinMode(semaforo->leds[i], OUTPUT);
     }
     
     for (int i=0; i<2; i++){
-        pinMode(cruzamento->sensores_velocidade[i], INPUT);
+        semaforo->sensores_velocidade[i] = sensor_velocidade[i];
+        pinMode(semaforo->sensores_velocidade[i], INPUT);
     }
 
     return semaforo;
 }
 
-void verdeParaVermelho(int * leds){
+void verdeParaVermelho(int leds[]){
     desligarLed(leds[0]); // desliga led verde
     ligarLed(leds[1]); // liga led amarelo
     delay(DELAY_AMARELO);
@@ -39,7 +34,7 @@ void verdeParaVermelho(int * leds){
     ligarLed(leds[2]); // liga led vermelho
 }
 
-void vermelhoParaVerde(int * leds){
+void vermelhoParaVerde(int leds[]){
     desligarLed(leds[2]); // desliga led vermelho
     ligarLed(leds[0]); // liga led verde
 }
