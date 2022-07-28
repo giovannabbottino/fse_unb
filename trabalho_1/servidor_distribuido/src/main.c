@@ -10,7 +10,7 @@ void cancelaExecucao() {
     printf("\nCancelando execução...\n");
     pthread_cancel(cruzamento1Thread);
     // pthread_cancel(cruzamento2Thread);
-    pthread_cancel(socketThread);
+    // pthread_cancel(socketThread);
     exit(0);
 }
 
@@ -38,9 +38,9 @@ int main(int argc, char **argv) {
     // pthread_create(&cruzamento2Thread, NULL, &cruzamentoHandlerThread, NULL);
     // pthread_detach(cruzamento2Thread);
 
-    iniciaSocket(atoi(argv[1]), argv[2]);
-    pthread_create(&socketThread, NULL, &clientSocketThread, NULL);
-    pthread_detach(socketThread);
+    // iniciaSocket(atoi(argv[1]), argv[2]);
+    // pthread_create(&socketThread, NULL, &clientSocketThread, NULL);
+    // pthread_detach(socketThread);
 
     while(1) {
         sleep(1);
