@@ -1,7 +1,7 @@
 #include "cruzamento.h"
 
 struct cruzamento{
-    Semaforos * semaforos[2];
+    struct semaforos * semaforos[2];
 };
 
 void *cruzamentoHandlerThread() {
@@ -9,34 +9,34 @@ void *cruzamentoHandlerThread() {
 }
 
 void run(int tipo){
-    Cruzamento * cruzamento = configuraCruzamento(tipo);
+    struct cruzamento * cruzamento = configuraCruzamento(tipo);
     for(;;){
-        ligarLed(cruzamento->semaforos[0]->leds[0]); // liga semaforo principal led verde 
-        ligarLed(cruzamento->semaforos[1]->leds[2]); // liga semaforo auxiliar led vermelho
+        ligarLed(cruzamento->semaforos[0].leds[0]); // liga semaforo principal led verde 
+        ligarLed(cruzamento->semaforos[1].leds[2]); // liga semaforo auxiliar led vermelho
 
         delay(DELAY_PRINCIPAL_VERDE_MINIMO); 
-        verdeParaVermelho(cruzamento->semaforos[0]->leds);
-        vermelhoParaVerde(cruzamento->semaforos[1]->leds);
+        verdeParaVermelho(cruzamento->semaforos[0].leds);
+        vermelhoParaVerde(cruzamento->semaforos[1].leds);
 
         delay(DELAY_PRINCIPAL_VERMELHO_MINIMO);
-        vermelhoParaVerde(cruzamento->semaforos[0]->leds);
-        vermelhoParaVerde(cruzamento->semaforos[1]->leds);
+        vermelhoParaVerde(cruzamento->semaforos[0].leds);
+        vermelhoParaVerde(cruzamento->semaforos[1].leds);
     }
 }
 
-Cruzamento * configuraCruzamento(int tipo){
+struct cruzamento * configuraCruzamento(int tipo){
     tipoCruzamento(tipo); 
-    Cruzamento * cruzamento = (Cruzamento *) malloc(sizeof(Cruzamento));
+    struct cruzamento * cruzamento = (cruzamento *) malloc(sizeof(cruzamento));
 
     wiringPiSetup();
     
-    Semaforo * cruzamento->semaforos[0] = configuraSemaforo(
+    struct semaforo * cruzamento->semaforos[0] = configuraSemaforo(
             [SEMAFORO_1_VERDE, SEMAFORO_1_AMARELO, SEMAFORO_1_VERMELHO],
             BOTAO_PEDESTRE_1,
             SENSOR_PASSAGEM_1,
             [SENSOR_VELOCIDADE_1_A, SENSOR_VELOCIDADE_1_B]
         );
-    Semaforo * cruzamento->semaforos[1] = configuraSemaforo(
+    struct semaforo * cruzamento->semaforos[1] = configuraSemaforo(
             [SEMAFORO_2_VERDE, SEMAFORO_2_AMARELO, SEMAFORO_2_VERMELHO],
             BOTAO_PEDESTRE_2,
             SENSOR_PASSAGEM_2,

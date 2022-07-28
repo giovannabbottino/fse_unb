@@ -8,8 +8,8 @@ struct semaforo {
     int sensores_velocidade[2];
 };
 
-Semaforo * configuraSemaforo(int * leds, int botao, int sensor_passagem, int * sensor_velocidade){
-    Semaforo * semaforo = (Semaforo *) malloc(sizeof(Semaforo));
+struct semaforo * configuraSemaforo(int * leds, int botao, int sensor_passagem, int * sensor_velocidade){
+    struct semaforo * semaforo = (semaforo *) malloc(sizeof(semaforo));
     semaforo->leds = leds;
     semaforo->botao = botao;
     semaforo->sensor_passagem = sensor_passagem;

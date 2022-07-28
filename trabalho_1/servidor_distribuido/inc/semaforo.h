@@ -37,6 +37,6 @@ void ligarLed(int led);
 
 void desligarLed(int led);
 
-Semaforo * configuraSemaforo(int * leds, int botao, int sensor_passagem, int * sensor_velocidade);
+struct semaforo * configuraSemaforo(int * leds, int botao, int sensor_passagem, int * sensor_velocidade);
 
 #endif
