@@ -9,7 +9,7 @@ Este trabalho tem por objetivo a criação de um sistema distribuído para o con
 ```
 git clone https://github.com/giovannabbottino/fse_unb
 ```
-2. Entre na pasta `trabalho_1`
+2. Entre na pasta `fse_unb/trabalho_1`
 ```
 cd trabalho_1
 ```

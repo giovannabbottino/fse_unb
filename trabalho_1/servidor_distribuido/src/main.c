@@ -30,11 +30,12 @@ int main(int argc, char **argv) {
 
     printf("\nVou começar as threads...\n");
 
-    tipoCruzamento(1);
+    tipoCruzamento(2);
     pthread_create(&cruzamento1Thread, NULL, &cruzamentoHandlerThread, NULL);
     pthread_detach(cruzamento1Thread);
 
     // tipoCruzamento(2);
+    // configuraCruzamento();
     // pthread_create(&cruzamento2Thread, NULL, &cruzamentoHandlerThread, NULL);
     // pthread_detach(cruzamento2Thread);
 

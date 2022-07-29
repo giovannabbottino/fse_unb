@@ -19,8 +19,3 @@ run:  bin/prog
 clean:
 	rm -rf obj/*
 	rm -rf bin/*
-
-roda: 
-	make clean 
-	make all 
-	make run porta=10161 ip=164.41.98.17

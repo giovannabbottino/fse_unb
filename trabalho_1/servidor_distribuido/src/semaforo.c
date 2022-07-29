@@ -2,7 +2,8 @@
 #include "info.h"
 
 Semaforo * configuraSemaforo(int leds[], int botao, int sensor_passagem, int sensor_velocidade[]){
-    Semaforo * semaforo = (Semaforo *) malloc(sizeof(Semaforo));
+    Semaforo * semaforo = (Semaforo *) malloc((Semaforo *) sizeof(Semaforo *));
+    semaforo = (Semaforo *) realloc(semaforo, sizeof(Semaforo));
     semaforo->botao = botao;
     semaforo->sensor_passagem = sensor_passagem;
 
