@@ -13,8 +13,10 @@
 
 #define PDU 200
 
-void *socketThread();
-void iniciaSocket(int porta, char * server_ip) ;
-void criaServerSocket();
+void iniciaSocket(int porta, char * server_ip);
+void *serverSocketThread();
+void encerraSocket();
+void *handlerMessageReceived();
+void *handlerSendMessage();
 
 #endif

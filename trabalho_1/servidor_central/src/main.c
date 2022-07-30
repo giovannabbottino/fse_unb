@@ -1,8 +1,7 @@
 #include <pthread.h>
 #include <signal.h>
 
-#include "cruzamento.h"
-#include "client.h"
+#include "server.h"
 
 pthread_t socketThread;
 
@@ -28,9 +27,9 @@ int main(int argc, char **argv) {
 
     printf("\nVou começar as threads...\n");
 
-    // iniciaSocket(atoi(argv[1]), argv[2]);
-    // pthread_create(&socketThread, NULL, &serverSocketThread, NULL);
-    // pthread_detach(socketThread);
+    iniciaSocket(atoi(argv[1]), argv[2]);
+    pthread_create(&socketThread, NULL, &serverSocketThread, NULL);
+    pthread_detach(socketThread);
 
     while(1) {
         sleep(1);

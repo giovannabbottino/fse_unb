@@ -44,10 +44,7 @@ void *clientSocketThread() {
         if((recv(client, mensagem, sizeof(mensagem), 0)) < 0) {
 			printf("\nERRO: Não é possível ler a mensagem enviada ao cliente!\n");
 		}
-		else if (mensagem[0] == '\0')
-            printf("\nAVISO: A mensagem está vazia, isto está certo?!\n");
-
-		else {
+		else if (mensagem[0] != '\0'){
 			printf("\n[CLIENT] Recebi uma mensagem %s\n", mensagem);
         }
         usleep(100000);

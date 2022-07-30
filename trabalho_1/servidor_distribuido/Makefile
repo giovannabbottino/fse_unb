@@ -23,4 +23,4 @@ clean:
 roda: 
 	make clean 
 	make all 
-	make run porta=10161 ip=164.41.98.17
+	make run porta=10165 ip=127.0.0.1
