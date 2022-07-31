@@ -16,6 +16,8 @@ typedef struct semaforo{
     int sensores_velocidade[2];
 }Semaforo;
 
+void apagaLeds(Semaforo * semaforo);
+
 void verdeParaVermelho(int leds[]);
 
 void vermelhoParaVerde(int leds[]);

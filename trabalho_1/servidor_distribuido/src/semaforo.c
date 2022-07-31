@@ -1,6 +1,12 @@
 #include "semaforo.h"
 #include "info.h"
 
+void apagaLeds(Semaforo * semaforo){
+    for(int i=0; i<=2; i++){
+        desligarLed(semaforo->leds[i]);
+    }
+}
+
 Semaforo * configuraSemaforo(int leds[], int botao, int sensor_passagem, int sensor_velocidade[]){
     Semaforo * semaforo = (Semaforo *) malloc((Semaforo *) sizeof(Semaforo *));
     semaforo = (Semaforo *) realloc(semaforo, sizeof(Semaforo));
@@ -33,6 +39,7 @@ void verdeParaVermelho(int leds[]){
 
     desligarLed(leds[1]); // desliga led amarelo
     ligarLed(leds[2]); // liga led vermelho
+    delay(DELAY_VERMELHO_TOTAL);
 }
 
 void vermelhoParaVerde(int leds[]){
@@ -41,11 +48,15 @@ void vermelhoParaVerde(int leds[]){
 }
 
 void ligarLed(int led){
-    printf(">> Led %d Ligado<<\n", led);
     digitalWrite(led, HIGH);
 }
 
 void desligarLed(int led){
-    printf(">> Led %d Desligado<<\n", led);
     digitalWrite(led, LOW);
+}
+
+void soarAlarme(){
+    if (system("omxplayer example.mp3") < 0){
+        printf("Erro para soar alarme\n");
+    }
 }

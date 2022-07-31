@@ -17,6 +17,6 @@ void iniciaSocket(int porta, char * server_ip);
 void *serverSocketThread();
 void encerraSocket();
 void *handlerMessageReceived();
-void *handlerSendMessage();
+void handlerSendMessage();
 
 #endif

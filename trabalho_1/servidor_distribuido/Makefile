@@ -14,7 +14,7 @@ all: $(SRCFILES:src/%.c=obj/%.o)
 obj/%.o: src/%.c
 	$(CC) $(CFLAGS) -c $< -o $@ -I./inc
 run:  bin/prog  
-	bin/prog $(porta) $(ip)
+	bin/prog $(porta) $(ip) $(cruzamento)
 .PHONY: clean
 clean:
 	rm -rf obj/*
@@ -23,4 +23,5 @@ clean:
 roda: 
 	make clean 
 	make all 
-	make run porta=10165 ip=127.0.0.1
+	clear
+	make run porta=10165 ip=127.0.0.1 cruzamento=2

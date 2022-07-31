@@ -11,9 +11,10 @@ git clone https://github.com/giovannabbottino/fse_unb
 ```
 2. Entre na pasta `fse_unb/trabalho_1`
 ```
-cd trabalho_1
+cd fse_unb/trabalho_1
 ```
 3. O `servidor_central` deve estar ativo antes de rodar os `servidores_distribuidos`
+
 3.1. Entre na pasta `servidor_central`
 ```
 cd servidor_central
@@ -28,9 +29,10 @@ make all
 ```
 4.4. Então, finalmente, lembre-se de colocar o valor da porta e do ip:
 ```
-make run porta=10161 ip=164.41.98.17
+make run porta=10161 ip=164.41.98.17 cruzamento=1
 ```
 4. Para cada uma das placas deve haver um `servidor_distribuido` rodando, por isso, em cada uma:
+
 4.1. Entre na pasta `servidor_distribuido`
 ```
 cd servidor_distribuido
@@ -43,11 +45,11 @@ make clean
 ```
 make all
 ```
-4.4. Então, finalmente, lembre-se de colocar o valor da porta e do ip:
+4.4. Então, finalmente, lembre-se de colocar o valor da porta, do ip e do cruzamento:
 ```
-make run porta=10161 ip=164.41.98.17
+make run porta=10161 ip=164.41.98.17 cruzamento=1
 ```
-Sendo a porta um inteiro entre 10161 e 10170, de acordo com o que foi disponibilizado pelo professor, já o ip o valor do servidor central.
+Sendo a porta um inteiro entre 10161 e 10170, de acordo com o que foi disponibilizado pelo professor, já o ip o valor do servidor central, e o cruzamento entre 1 e 2.
 
 ## Info para o desenvolvimento
 ```
@@ -62,12 +64,4 @@ ssh <user>@164.41.98.26 -p 13508
 
 rasp43 -> Dashboard do Cruzamento 1
 rasp44 -> Dashboard do Cruzamento 3
-
-Para tocar o áudio basta usar o comando 
-
-
-omxplayer example.mp3
- 
-
-No shell
 ```

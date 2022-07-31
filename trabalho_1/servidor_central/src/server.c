@@ -57,13 +57,7 @@ void *serverSocketThread(){
     } 
     printf("[SERVER] Aceita conexoes direta\n");
 
-	pthread_t recebeThread, enviaThread;
-
-	pthread_create(&recebeThread, NULL, &handlerMessageReceived, NULL);
-    pthread_detach(recebeThread);
-
-	pthread_create(&enviaThread, NULL, &handlerSendMessage, NULL);
-    pthread_detach(enviaThread);
+	handlerMessageReceived();
 
 	return 0;
 }
@@ -95,18 +89,10 @@ void * handlerMessageReceived() {
 	handlerMessageReceived();
 }
 
-void * handlerSendMessage() {
-	char messagem[PDU];
-	bzero(messagem, PDU); /* apaga a informacao*/
-            
-	/* Menu de interação */
-	printf("\n>>>[MENU] Esperando por mensagem<<<\n");
-	fgets(messagem, sizeof(messagem), stdin);
-            
+void handlerSendMessage(messagem) {
 	if(send(client, messagem, sizeof(messagem), 0) < 0){
 		perror("[SERVER] Falha no envio");
 	} else{
 		printf("[SERVER] Mensagem enviada foi: %s\n", messagem);
 	}
-	handlerSendMessage();
 }

@@ -3,13 +3,13 @@
 
 #include "semaforo.h"
 #include "info.h"
-
+#include <sys/time.h>
 #include <time.h>
 #include <pthread.h>
 
 typedef struct cruzamento{
     Semaforo * semaforos[2];
-    int estado[2];
+    int estado;
 }Cruzamento;
 
 
@@ -31,8 +31,12 @@ typedef struct variaveisCruzamento{
 }VariaveisCruzamento;
 
 void *cruzamentoHandlerThread();
-void handle();
-void tipoCruzamento(int tipo);
-void configuraCruzamento();
 void botao_apertado();
+
+void handle();
+float time_diff(struct timeval *start, struct timeval *end);
+void limpaCruzamento(Cruzamento * cruzamento);
+void configuraCruzamento();
+void tipoCruzamento(int tipo);
+
 #endif

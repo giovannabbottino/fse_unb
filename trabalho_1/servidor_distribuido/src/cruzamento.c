@@ -5,67 +5,90 @@ Cruzamento * cruzamento = {NULL};
 
 static struct timeval ultimasMudancas;
 
-struct timeval get_now() {
-    struct timeval now;
-
-    gettimeofday(&now, NULL);
-
-    return now;
-}
-
 void *cruzamentoHandlerThread() {
-    configuraCruzamento();
     printf("\nComecei a thread de cruzamento...\n");
     printf("\nIniciando loop...\n");
 
-    for (int i=0; i<3; i++){
-        desligarLed(cruzamento->semaforos[0]->leds[i]);
-        desligarLed(cruzamento->semaforos[1]->leds[i]);
-    }
+    limpaCruzamento(cruzamento);
+
     ligarLed(cruzamento->semaforos[0]->leds[0]); // liga semaforo principal led verde 
     ligarLed(cruzamento->semaforos[1]->leds[2]); // liga semaforo auxiliar led vermelho
-    ultimasMudancas = get_now();
-
+    cruzamento->estado = 1;
+    
+    gettimeofday(&ultimasMudancas, NULL); 
     for(;;){
-        botao_apertado();
         handle();
     }
 }
 
+void botao_apertado(){
+    static struct timespec ultimaChamada;
+    struct timespec essaChamada;
+    float duracao; 
+
+    clock_gettime(CLOCK_REALTIME, &essaChamada);
+    duracao = (essaChamada.tv_sec + essaChamada.tv_nsec - ultimaChamada.tv_sec - ultimaChamada.tv_nsec);
+
+    printf("\n>>Botão apertado!<<\n");
+    printf("Duracao %d\n", duracao);
+}
+
 void handle(){
-    struct timeval agora = get_now();
-    long int soma = 1000000;
-    unsigned long duracao = (agora.tv_sec + soma + agora.tv_usec) - (ultimasMudancas.tv_sec + soma + ultimasMudancas.tv_usec);
-    switch (cruzamento->estado[0]) {
-        case 1:
-            if( duracao >= DELAY_PRINCIPAL_VERDE_MINIMO && duracao <= DELAY_PRINCIPAL_VERDE_MAXIMO){
-                printf("\n>> Duracao : %d\n",duracao );
-                printf(">> Mudando semaforo principal para vermelho\n");
+    struct timeval agora;
+    gettimeofday(&agora, NULL); 
+    float duracao = time_diff(&ultimasMudancas, &agora);
+    switch (cruzamento->estado) {
+        /*
+        estado 
+        1 = ligado
+        0 = desligado
+        2 = emergencia
+        3 = noturno
+        */
+        case 1: // ligado
+            if( duracao >= DELAY_PRINCIPAL_VERDE_MINIMO){
                 verdeParaVermelho(cruzamento->semaforos[0]->leds);
-                printf(">> Mudando semaforo auxiliar para verde\n");
                 vermelhoParaVerde(cruzamento->semaforos[1]->leds);
-                cruzamento->estado[0] = 0;
-                cruzamento->estado[1] = 1;
-                ultimasMudancas = agora;
-                delay(DELAY_PRINCIPAL_VERDE_MINIMO);
+                cruzamento->estado = 0;
+                gettimeofday(&ultimasMudancas, NULL);
             }
             break;
-        case 0:
-            if( duracao >= DELAY_AUXILIAR_VERDE_MINIMO && duracao <= DELAY_AUXILIAR_VERDE_MAXIMO){
-                printf("\n>> Duracao : %d\n",duracao );
-                printf(">> Mudando semaforo auxiliar para vermelho\n");
+        case 0: // desligado
+            if( duracao >= DELAY_AUXILIAR_VERDE_MINIMO){
                 verdeParaVermelho(cruzamento->semaforos[1]->leds);
-                printf(">> Mudando semaforo principal para verde\n");
                 vermelhoParaVerde(cruzamento->semaforos[0]->leds);
-                cruzamento->estado[0] = 1;
-                cruzamento->estado[1] = 0;
-                ultimasMudancas = agora;
-                delay(DELAY_AUXILIAR_VERDE_MINIMO);
+                cruzamento->estado = 1; // ligado
+                gettimeofday(&ultimasMudancas, NULL);
             }
+            break;
+        case 2: // emergencia
+            limpaCruzamento(cruzamento);
+            ligarLed(cruzamento->semaforos[0]->leds[0]);
+            ligarLed(cruzamento->semaforos[1]->leds[2]);
+            cruzamento->estado = 2;
+            
+            gettimeofday(&ultimasMudancas, NULL);
+            break;
+        case 3: // noturno
+            limpaCruzamento(cruzamento);
+            delay(DELAY_AMARELO);
+            ligarLed(cruzamento->semaforos[0]->leds[1]);
+            ligarLed(cruzamento->semaforos[1]->leds[1]);
+            cruzamento->estado = 3;
+            gettimeofday(&ultimasMudancas, NULL);
+            delay(DELAY_AMARELO);
             break;
     }
 }
 
+float time_diff(struct timeval *start, struct timeval *end){
+    return ((end->tv_sec - start->tv_sec) + 1e-6*(end->tv_usec - start->tv_usec) )* 1000.0;
+}
+
+void limpaCruzamento(Cruzamento * cruzamento){
+    apagaLeds(cruzamento->semaforos[0]);
+    apagaLeds(cruzamento->semaforos[1]);
+}
 
 void configuraCruzamento(){ 
     printf("\nConfigurando cruzamento...\n");
@@ -81,9 +104,6 @@ void configuraCruzamento(){
             velocidade1
         );
 
-    cruzamento->semaforos[0] = s1;
-    cruzamento->estado[0] = 1; // ligado
-
     int semaforos2[3] = {var.semaforo_2_verde, var.semaforo_2_amarelo, var.semaforo_2_vermelho};
     int velocidade2[2] = {var.sensor_velocidade_2_A, var.sensor_velocidade_2_B};
     Semaforo * s2 = configuraSemaforo(
@@ -92,8 +112,13 @@ void configuraCruzamento(){
             var.sensor_passagem_2,
             velocidade2
         );
-    cruzamento->semaforos[1] = s2;
-    cruzamento->estado[1] = 0; // desligado
+
+    wiringPiISR(s1->botao, INT_EDGE_FALLING, botao_apertado);
+    wiringPiISR(s2->botao, INT_EDGE_FALLING, botao_apertado);
+
+    cruzamento->semaforos[0] = s2;
+    cruzamento->semaforos[1] = s1;
+    cruzamento->estado = 1; // ligado o cruzamento 0
 }
 
 void tipoCruzamento(int tipo){
@@ -128,29 +153,5 @@ void tipoCruzamento(int tipo){
         var.sensor_velocidade_1_B = CRUZAMENTO_2_SENSOR_VELOCIDADE_1_B;
         var.sensor_velocidade_2_A = CRUZAMENTO_2_SENSOR_VELOCIDADE_2_A;
         var.sensor_velocidade_2_B = CRUZAMENTO_2_SENSOR_VELOCIDADE_2_B;
-    }
-}
-
-void botao_apertado(){
-    long int soma = 1000000;
-    struct timeval agora = get_now();
-    struct timeval botao_pressionado = agora;;
-    unsigned long duracao;
-
-    int botao_1 = digitalRead(cruzamento->semaforos[0]->botao);
-
-    int botao_2 = digitalRead(cruzamento->semaforos[1]->botao);
-
-    if (botao_1==HIGH || botao_2==HIGH){
-        botao_pressionado = get_now();
-    }
-    
-    duracao = (agora.tv_sec + soma + agora.tv_usec) - (botao_pressionado.tv_sec + soma + botao_pressionado.tv_usec);
-    if (duracao >= 300 ) {
-        printf("\nDuracao %d\n", duracao);
-        printf(">>Botão apertado!<<\n");
-        while (!cruzamento->estado[0] && !cruzamento->estado[1]){
-            handle();
-        }            
     }
 }
