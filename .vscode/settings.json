@@ -1,8 +1,0 @@
-{
-    "makefile.extensionOutputFolder": "./.vscode",
-    "files.associations": {
-        "client.h": "c",
-        "cruzamento.h": "c",
-        "unistd.h": "c"
-    }
-}
