@@ -11,6 +11,8 @@
 #include <strings.h> /* bzero() */
 #include <ctype.h> /* isdigit*/
 
+#include "mensagem.h"
+
 #define PDU 200
 
 void *clientSocketThread();

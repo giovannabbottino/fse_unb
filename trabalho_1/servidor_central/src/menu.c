@@ -19,7 +19,7 @@ void handleUser(){
 	fgets(messagem, sizeof(messagem), stdin);
 
     if (strcmp(messagem, "1") == 0){
-        handlerSendMessage("1");
+        printf("\n>>>Não implementado<<<\n");
     } else if (strcmp(messagem, "2") == 0){
         handlerSendMessage("2");
     } else if (strcmp(messagem, "3") == 0){

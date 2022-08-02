@@ -1,5 +1,4 @@
 #include "client.h"
-#include <string.h>
 
 struct sockaddr_in server; /* socket do servidor */
 char *server_ip;
@@ -46,6 +45,7 @@ void *clientSocketThread() {
 		}
 		else if (mensagem[0] != '\0'){
 			printf("\n[CLIENT] Recebi uma mensagem %s\n", mensagem);
+            handlerMensagem(mensagem);
         }
         usleep(100000);
     }

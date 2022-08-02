@@ -5,6 +5,8 @@ Cruzamento * cruzamento = {NULL};
 
 static struct timeval ultimasMudancas;
 
+float duracao;
+
 void *cruzamentoHandlerThread() {
     printf("\nComecei a thread de cruzamento...\n");
     printf("\nIniciando loop...\n");
@@ -22,13 +24,6 @@ void *cruzamentoHandlerThread() {
 }
 
 void botao_apertado(){
-    static struct timespec ultimaChamada;
-    struct timespec essaChamada;
-    float duracao; 
-
-    clock_gettime(CLOCK_REALTIME, &essaChamada);
-    duracao = (essaChamada.tv_sec + essaChamada.tv_nsec - ultimaChamada.tv_sec - ultimaChamada.tv_nsec);
-
     printf("\n>>Botão apertado!<<\n");
     printf("Duracao %d\n", duracao);
 }
@@ -36,7 +31,7 @@ void botao_apertado(){
 void handle(){
     struct timeval agora;
     gettimeofday(&agora, NULL); 
-    float duracao = time_diff(&ultimasMudancas, &agora);
+    duracao = time_diff(&ultimasMudancas, &agora);
     switch (cruzamento->estado) {
         /*
         estado 
@@ -46,7 +41,7 @@ void handle(){
         3 = noturno
         */
         case 1: // ligado
-            if( duracao >= DELAY_PRINCIPAL_VERDE_MINIMO){
+            if( duracao >= DELAY_PRINCIPAL_VERDE_MINIMO && duracao <= DELAY_PRINCIPAL_VERDE_MAXIMO){
                 verdeParaVermelho(cruzamento->semaforos[0]->leds);
                 vermelhoParaVerde(cruzamento->semaforos[1]->leds);
                 cruzamento->estado = 0;
@@ -54,7 +49,7 @@ void handle(){
             }
             break;
         case 0: // desligado
-            if( duracao >= DELAY_AUXILIAR_VERDE_MINIMO){
+            if( duracao >= DELAY_AUXILIAR_VERDE_MINIMO && duracao <= DELAY_PRINCIPAL_VERDE_MAXIMO){
                 verdeParaVermelho(cruzamento->semaforos[1]->leds);
                 vermelhoParaVerde(cruzamento->semaforos[0]->leds);
                 cruzamento->estado = 1; // ligado
