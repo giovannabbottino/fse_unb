@@ -30,9 +30,12 @@ typedef struct variaveisCruzamento{
     int sensor_velocidade_2_B;
 }VariaveisCruzamento;
 
+Cruzamento * cruzamento;
+int tipo;
+
 void *cruzamentoHandlerThread();
 void botao_apertado();
-
+void ultimaMudanca();
 void handle();
 float time_diff(struct timeval *start, struct timeval *end);
 void limpaCruzamento(Cruzamento * cruzamento);

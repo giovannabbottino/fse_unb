@@ -1,7 +1,9 @@
 #include "cruzamento.h"
+#include "mensagem.h"
 
 VariaveisCruzamento var = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 Cruzamento * cruzamento = {NULL};
+int tipo;
 
 static struct timeval ultimasMudancas;
 
@@ -16,8 +18,23 @@ void *cruzamentoHandlerThread() {
     ligarLed(cruzamento->semaforos[0]->leds[0]); // liga semaforo principal led verde 
     ligarLed(cruzamento->semaforos[1]->leds[2]); // liga semaforo auxiliar led vermelho
     cruzamento->estado = 1;
+
+    // mensagens->cruzamento = tipo;
+    // mensagens->passagem_carro = 0;
+    // gettimeofday(&mensagens->timestamp, NULL);
+    // mensagens->acima_velocidade = 2;
+    // mensagens->avanco_vermelho = 3;
+
+    // Mensagem * nova = malloc(sizeof(Mensagem *));
+    // nova->cruzamento = tipo;
+    // nova->passagem_carro = 1; 
+    // gettimeofday(&nova->timestamp, NULL);
+    // nova->acima_velocidade = 7;
+    // nova->avanco_vermelho = 5;
+    // nova->proxima = NULL;
+    // mensagens->proxima = nova; 
     
-    gettimeofday(&ultimasMudancas, NULL); 
+    ultimaMudanca(); 
     for(;;){
         handle();
     }
@@ -45,7 +62,7 @@ void handle(){
                 verdeParaVermelho(cruzamento->semaforos[0]->leds);
                 vermelhoParaVerde(cruzamento->semaforos[1]->leds);
                 cruzamento->estado = 0;
-                gettimeofday(&ultimasMudancas, NULL);
+                ultimaMudanca();
             }
             break;
         case 0: // desligado
@@ -53,31 +70,34 @@ void handle(){
                 verdeParaVermelho(cruzamento->semaforos[1]->leds);
                 vermelhoParaVerde(cruzamento->semaforos[0]->leds);
                 cruzamento->estado = 1; // ligado
-                gettimeofday(&ultimasMudancas, NULL);
+                ultimaMudanca();
             }
             break;
-        case 2: // emergencia
-            limpaCruzamento(cruzamento);
+        case 2: // emergencia    
             ligarLed(cruzamento->semaforos[0]->leds[0]);
             ligarLed(cruzamento->semaforos[1]->leds[2]);
             cruzamento->estado = 2;
-            
-            gettimeofday(&ultimasMudancas, NULL);
+            ultimaMudanca();
             break;
         case 3: // noturno
             limpaCruzamento(cruzamento);
-            delay(DELAY_AMARELO);
+            if( duracao >= DELAY_AMARELO ){
             ligarLed(cruzamento->semaforos[0]->leds[1]);
             ligarLed(cruzamento->semaforos[1]->leds[1]);
             cruzamento->estado = 3;
-            gettimeofday(&ultimasMudancas, NULL);
             delay(DELAY_AMARELO);
+            ultimaMudanca();
+            }
             break;
     }
 }
 
 float time_diff(struct timeval *start, struct timeval *end){
     return ((end->tv_sec - start->tv_sec) + 1e-6*(end->tv_usec - start->tv_usec) )* 1000.0;
+}
+
+void ultimaMudanca(){
+    gettimeofday(&ultimasMudancas, NULL);
 }
 
 void limpaCruzamento(Cruzamento * cruzamento){
@@ -116,7 +136,8 @@ void configuraCruzamento(){
     cruzamento->estado = 1; // ligado o cruzamento 0
 }
 
-void tipoCruzamento(int tipo){
+void tipoCruzamento(int t){
+    tipo = t;
     printf("\nCruzamento %d...\n", tipo);
     if (tipo == 1){
         var.semaforo_1_verde = CRUZAMENTO_1_SEMAFORO_1_VERDE;

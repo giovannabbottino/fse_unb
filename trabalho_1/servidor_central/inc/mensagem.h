@@ -1,9 +1,6 @@
 #ifndef MENSAGEM_H
 #define MENSAGEM_H
 
-#include <stdio.h> /* printf() */
-#include <stdlib.h>
-#include <strings.h> /* bzero() */
 #include <time.h>
 
 
@@ -16,10 +13,4 @@ typedef struct mensagem{
     struct timespec * timestamp;
 }Mensagem;
 
-Mensagem * mensagens;
-
-
-void esvaziaMensagens();
-void handlerMensagem(char *message);
-    
 #endif

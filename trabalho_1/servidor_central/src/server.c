@@ -1,11 +1,12 @@
 #include "server.h"
 #include <string.h>
+#include "menu.h"
+#include "mensagem.h"
 
 struct sockaddr_in serverSocket, clientSocket; /* socket do servidor */
 char *server_ip;
 unsigned short porta;
 int server, client;
-char clientMessagem[PDU];
 
 void iniciaSocket(int porta, char * server_ip) {
     server_ip = server_ip;
@@ -33,8 +34,6 @@ void iniciaSocket(int porta, char * server_ip) {
 		perror("\n[SERVER] Não pode conectar no Socket\n");
 		exit(1);
 	}
-
-    memset(clientMessagem, '\0', sizeof(clientMessagem));
 
 	if(listen(server, 10) < 0) {
 		perror("\n[SERVER] Não pode escutar server socket\n");
@@ -68,22 +67,20 @@ void encerraSocket() {
 }
 
 void * handlerMessageReceived() {
+	Mensagem * clientMessagem = malloc(sizeof(Mensagem));
 	int count;
-	
 	while (1) {
-		bzero(clientMessagem, sizeof(clientMessagem));
-
 		if (count > 20) break;
 
-		if((recv(client, clientMessagem, sizeof(clientMessagem), 0)) < 0) {
+		if((recv(client, &clientMessagem, sizeof(Mensagem), 0)) < 0) {
 			printf("[SERVER] Não é possivel ler a mensagem\n");
 			count++;
-		}
-
-		else if (clientMessagem[0] == '\0') count++;
-
-		else {
-			printf("[SERVER] Recebi a mensagem:\n\n%s\n", clientMessagem);
+		} else {
+			printf("[SERVER]\n--- Cruzamento: %d\n", clientMessagem->cruzamento);
+			printf("Passagem de carros: %d\n", clientMessagem->passagem_carro);
+			printf("Acima da velocidade: %d\n", clientMessagem->acima_velocidade);
+			printf("Avanço no vermelho: %d\n", clientMessagem->avanco_vermelho);
+			printf("Timestamp: %lld.%.9ld\n", (long long)clientMessagem->timestamp->tv_sec, clientMessagem->timestamp->tv_nsec);
 		}
 	}
 	handlerMessageReceived();

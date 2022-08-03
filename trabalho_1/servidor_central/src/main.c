@@ -2,12 +2,14 @@
 #include <signal.h>
 
 #include "server.h"
+#include "menu.h"
 
-pthread_t socketThread;
+pthread_t socketThread, menuThread;
 
 void cancelaExecucao() {
     printf("\nCancelando execução...\n");
     pthread_cancel(socketThread);
+    pthread_cancel(menuThread);
     exit(0);
 }
 
@@ -30,6 +32,9 @@ int main(int argc, char **argv) {
     iniciaSocket(atoi(argv[1]), argv[2]);
     pthread_create(&socketThread, NULL, &serverSocketThread, NULL);
     pthread_detach(socketThread);
+
+    pthread_create(&menuThread, NULL, &escreveMenu, NULL);
+    pthread_detach(menuThread);
 
     while(1) {
         sleep(1);

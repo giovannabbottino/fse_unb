@@ -16,7 +16,7 @@
 #define PDU 200
 
 void *clientSocketThread();
-void enviaMensagem(char *message);
+void enviaMensagem(Mensagem *mensagem);
 void iniciaSocket(int porta, char * server_ip) ;
 void fechaSocket();
 
