@@ -13,10 +13,11 @@
 
 #include "mensagem.h"
 
+#define VETOR 4
 #define PDU 200
 
 void *clientSocketThread();
-void enviaMensagem(Mensagem *mensagem);
+void enviaMensagem(int * mensagem);
 void iniciaSocket(int porta, char * server_ip) ;
 void fechaSocket();
 

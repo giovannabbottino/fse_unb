@@ -1,12 +1,13 @@
 #include "server.h"
 #include <string.h>
 #include "menu.h"
-#include "mensagem.h"
 
 struct sockaddr_in serverSocket, clientSocket; /* socket do servidor */
 char *server_ip;
 unsigned short porta;
 int server, client;
+
+int vetor[VETOR] = {0};
 
 void iniciaSocket(int porta, char * server_ip) {
     server_ip = server_ip;
@@ -47,9 +48,9 @@ void *serverSocketThread(){
 		perror("[SERVER] Não é possivel escutar server socket\n");
 		exit(1);
 	}
+	int size = sizeof(clientSocket);
 	 /* Aceita conexoes direta entre o servidor e cliente */
-    socklen_t client_size = sizeof(clientSocket);
-    client = accept(server, (struct sockaddr *) &clientSocket, &client_size);
+    client = accept(server, (struct sockaddr *) &clientSocket, &size);
     if ( client == -1 ){
         perror("[SERVER] Não pode dar accept na PORT");
         exit(0);
@@ -57,8 +58,6 @@ void *serverSocketThread(){
     printf("[SERVER] Aceita conexoes direta\n");
 
 	handlerMessageReceived();
-
-	return 0;
 }
 
 void encerraSocket() {
@@ -66,24 +65,24 @@ void encerraSocket() {
 	close(server);
 }
 
-void * handlerMessageReceived() {
-	Mensagem * clientMessagem = malloc(sizeof(Mensagem));
-	int count;
+void handlerMessageReceived() {
+	int retorno_msg;
 	while (1) {
-		if (count > 20) break;
-
-		if((recv(client, &clientMessagem, sizeof(Mensagem), 0)) < 0) {
-			printf("[SERVER] Não é possivel ler a mensagem\n");
-			count++;
-		} else {
-			printf("[SERVER]\n--- Cruzamento: %d\n", clientMessagem->cruzamento);
-			printf("Passagem de carros: %d\n", clientMessagem->passagem_carro);
-			printf("Acima da velocidade: %d\n", clientMessagem->acima_velocidade);
-			printf("Avanço no vermelho: %d\n", clientMessagem->avanco_vermelho);
-			printf("Timestamp: %lld.%.9ld\n", (long long)clientMessagem->timestamp->tv_sec, clientMessagem->timestamp->tv_nsec);
+		retorno_msg = recv(client, vetor, VETOR * sizeof(int), 0);
+		
+		if(retorno_msg == 0){
+			printf("[SERVER] Conexão Encerrada!\n");
+			encerraSocket(client);
+			exit(0);
+		}else if (retorno_msg < 0){
+			printf("[SERVER] Não foi possivel receber a mensagem");
+		} else{ 
+			printf("[SERVER] Cruzamento: %d\n", vetor[0]);
+			printf("\t\t\tPassagem de carros: %d\n", vetor[1]);
+			printf("\t\t\tAcima da velocidade: %d\n", vetor[2]);
+			printf("\t\t\tAvanço no vermelho: %d\n", vetor[3]);
 		}
 	}
-	handlerMessageReceived();
 }
 
 void handlerSendMessage(messagem) {

@@ -11,7 +11,6 @@ float duracao;
 
 void *cruzamentoHandlerThread() {
     printf("\nComecei a thread de cruzamento...\n");
-    printf("\nIniciando loop...\n");
 
     limpaCruzamento(cruzamento);
 
@@ -19,22 +18,14 @@ void *cruzamentoHandlerThread() {
     ligarLed(cruzamento->semaforos[1]->leds[2]); // liga semaforo auxiliar led vermelho
     cruzamento->estado = 1;
 
-    // mensagens->cruzamento = tipo;
-    // mensagens->passagem_carro = 0;
-    // gettimeofday(&mensagens->timestamp, NULL);
-    // mensagens->acima_velocidade = 2;
-    // mensagens->avanco_vermelho = 3;
-
-    // Mensagem * nova = malloc(sizeof(Mensagem *));
-    // nova->cruzamento = tipo;
-    // nova->passagem_carro = 1; 
-    // gettimeofday(&nova->timestamp, NULL);
-    // nova->acima_velocidade = 7;
-    // nova->avanco_vermelho = 5;
-    // nova->proxima = NULL;
-    // mensagens->proxima = nova; 
+    esvaziaMensagens();
+    mensagens->cruzamento = 2;
+    mensagens->passagem_carro = 0;
+    mensagens->acima_velocidade = 2;
+    mensagens->avanco_vermelho = 3;
     
     ultimaMudanca(); 
+    printf("\nIniciando loop...\n");
     for(;;){
         handle();
     }

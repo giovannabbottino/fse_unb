@@ -1,5 +1,4 @@
 #include "mensagem.h"
-#include "cruzamento.h"
 
 Mensagem * mensagens = {NULL};
 
@@ -7,8 +6,6 @@ void esvaziaMensagens(){
     mensagens = realloc(mensagens, sizeof(Mensagem));
     mensagens->cruzamento = tipo;
     mensagens->passagem_carro = 0;
-    mensagens->proxima = NULL;
-    gettimeofday(&mensagens->timestamp, NULL);
     mensagens->acima_velocidade = 0;
     mensagens->avanco_vermelho = 0;
 }
@@ -21,10 +18,8 @@ void handlerMensagem(char * mensagem){
         */
     if (strcmp(mensagem, "1") == 0){
         printf("\n[CLIENT] Enviando logs\n");
-        do{
-            enviaMensagem(mensagens);
-        }while (mensagens->proxima != NULL);
-        esvaziaMensagens();
+        int mensagem[VETOR] = {mensagens->cruzamento,  mensagens->passagem_carro, mensagens->acima_velocidade,  mensagens->avanco_vermelho};
+        enviaMensagem(mensagem);
     }
     else if (strcmp(mensagem, "2") == 0){
         if (cruzamento->estado != 2){

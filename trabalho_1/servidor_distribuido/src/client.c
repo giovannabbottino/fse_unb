@@ -51,15 +51,13 @@ void *clientSocketThread() {
     }
 }
 
-void enviaMensagem(Mensagem *mensagem) {
+void enviaMensagem(int * mensagem) {
     if (client < 0) {
         printf("\nERRO: Não consigo enviar a mensagem!\n");
     }
-    else {
-        int response = send(client, &mensagem, sizeof(Mensagem), 0);
-        if (!response)
-            printf("\nERRO: Não foi possivel enviar a mensagem!\n");
-    }
+    int response = send(client, mensagem, VETOR * sizeof(int), 0);
+    if (!response)
+        printf("\nERRO: Não foi possivel enviar a mensagem!\n");
 }
 
 void fechaSocket(){
