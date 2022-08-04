@@ -1,7 +1,4 @@
 #include "menu.h"
-#include "server.h"
-
-int clientes[4] = {0};
 
 void * escreveMenu(){
     printf("\n>>>[MENU]<<<\n");
@@ -20,9 +17,9 @@ void handleUser(){
     messagem[strcspn(messagem, "\n")] = '\0';
 
     if (strcmp(messagem, "1") == 0  || strcmp(messagem, "2") == 0 || strcmp(messagem, "3") == 0){
-        for(int i=0; i<4; i++){
-            handlerSendMessage(clientes[i], messagem);
-        }
+        strcpy(messagemServer, messagem);
+        enviar = 1;
+
     } else {
         printf("\n>>>Escolha um item adequado<<<\n"); 
     }

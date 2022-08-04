@@ -1,7 +1,8 @@
 #ifndef MENU_H
 #define MENU_H
 
-int clientes[4];
+#include "server.h"
+#include <string.h>
 
 void * escreveMenu();
 void handleUser();

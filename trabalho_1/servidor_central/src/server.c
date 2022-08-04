@@ -1,10 +1,10 @@
 #include "server.h"
-#include <string.h>
-#include "menu.h"
 
 int client;
 
 int vetor[VETOR] = {0};
+int enviar = 0;
+char messagemServer[PDU] = "";
 
 int iniciaSocket(int porta, char * server_ip) {
     /* Criacao do socket TCP */
@@ -53,8 +53,18 @@ void *serverSocketThread(void *args){
         exit(0);
     } 
     printf("[SERVER] Aceita conexoes direta\n");
+	
+	pthread_t receberThread;
 
-	handlerMessageReceived(client, server);
+	Args * args_1 = (Args *) malloc((Args *) sizeof(Args));
+	
+    args_1->client = client;
+    args_1->server = server;
+
+	pthread_create(&receberThread, NULL, &handlerMessageReceived, args_1);
+    pthread_detach(receberThread);
+
+	handlerSendMessage(client);
 }
 
 void encerraSocket(int client, int server) {
@@ -62,7 +72,10 @@ void encerraSocket(int client, int server) {
 	close(server);
 }
 
-void handlerMessageReceived(int client, int server) {
+void *handlerMessageReceived(void *args) {
+	Args *actual_args = args;
+	int client = actual_args->client;
+	int server = actual_args->server;
 	int retorno_msg;
 	while (1) {
 		retorno_msg = recv(client, vetor, VETOR * sizeof(int), 0);
@@ -83,10 +96,15 @@ void handlerMessageReceived(int client, int server) {
 	}
 }
 
-void handlerSendMessage(int client, char * messagem) {
-	if(send(client, messagem, sizeof(messagem), 0) < 0){
-		perror("[SERVER] Falha no envio");
-	} else{
-		printf("[SERVER] Mensagem enviada foi: %s\n", messagem);
+void handlerSendMessage(int client) {
+	while (1) {
+		if (enviar == 1){
+			if(send(client, messagemServer, sizeof(messagemServer), 0) < 0){
+				perror("[SERVER] Falha no envio");
+			} else{
+				printf("[SERVER] Mensagem enviada foi: %s\n", messagemServer);
+			}
+			enviar = 0;
+		}
 	}
 }
