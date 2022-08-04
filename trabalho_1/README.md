@@ -29,7 +29,7 @@ make all
 ```
 4.4. Então, finalmente, lembre-se de colocar o valor da porta e do ip:
 ```
-make run ip=127.0.0.1 porta_1=10161 porta_2=10165 porta_3=10167 porta_3=10169
+make run ip=127.0.0.1 porta_1=10161 porta_2=10165 porta_3=10167 porta_4=10169
 ```
 4. Para cada uma das placas deve haver um `servidor_distribuido` rodando, por isso, em cada uma:
 
@@ -47,6 +47,6 @@ make all
 ```
 4.4. Então, finalmente, lembre-se de colocar o valor da porta, do ip e do cruzamento:
 ```
-make run porta=10161 ip=164.41.98.17 cruzamento=1
+make run porta=10161 ip=127.0.0.1 cruzamento=1
 ```
 Sendo a porta um inteiro entre 10161 e 10170, de acordo com o que foi disponibilizado pelo professor, já o ip o valor do servidor central, e o cruzamento entre 1 e 2.

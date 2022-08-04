@@ -159,7 +159,9 @@ void velocidade_a(){
             soarAlarme();
             mensagens->avanco_vermelho++;
         }
+        printf("\nVelocidade: %f!\n", velocidade);
         mensagens->velocidade_media = (velocidade + mensagens->velocidade_media) / 2;
+        printf("\nVelocidade media: %f!\n", mensagens->velocidade_media);
     } 
 }
 
@@ -182,7 +184,9 @@ void velocidade_b(){
             soarAlarme();
             mensagens->avanco_vermelho++;
         }
+        printf("\nVelocidade: %f!\n", velocidade);
         mensagens->velocidade_media = (velocidade + mensagens->velocidade_media) / 2;
+        printf("\nVelocidade media: %f!\n", mensagens->velocidade_media);
     } 
     if (estado_velocidade_b){
         if (cruzamento->estado == 0){
