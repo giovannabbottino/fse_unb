@@ -1,10 +1,7 @@
 #include "menu.h"
 #include "server.h"
 
-void cancela() {
-    printf("\nVoltando ao menu...\n");
-    escreveMenu();
-}
+int clientes[4] = {0};
 
 void * escreveMenu(){
     printf("\n>>>[MENU]<<<\n");
@@ -22,16 +19,12 @@ void handleUser(){
 	fgets(messagem, sizeof(messagem), stdin);
     messagem[strcspn(messagem, "\n")] = '\0';
 
-    if (strcmp(messagem, "1") == 0){
-        handlerSendMessage("1");
-    } else if (strcmp(messagem, "2") == 0){
-        handlerSendMessage("2");
-        escreveMenu();
-    } else if (strcmp(messagem, "3") == 0){
-        handlerSendMessage("3");
-        escreveMenu();
+    if (strcmp(messagem, "1") == 0  || strcmp(messagem, "2") == 0 || strcmp(messagem, "3") == 0){
+        for(int i=0; i<4; i++){
+            handlerSendMessage(clientes[i], messagem);
+        }
     } else {
-        printf("\n>>>Escolha um item adequado<<<\n");
-        escreveMenu();
+        printf("\n>>>Escolha um item adequado<<<\n"); 
     }
+    escreveMenu();
 }

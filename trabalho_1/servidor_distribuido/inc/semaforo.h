@@ -7,20 +7,20 @@
 #include <wiringPi.h>
 
 #include <unistd.h>
-#include <stdbool.h>
 
 typedef struct semaforo{
     int leds[3];
     int botao;
     int sensor_passagem;
     int sensores_velocidade[2];
+    int led_ligado; //0 verde 1 amarelo 2 vermelho 3 nenhum
 }Semaforo;
 
-void apagaLeds(Semaforo * semaforo);
+int apagaLeds(Semaforo * semaforo);
 
-void verdeParaVermelho(int leds[]);
+int verdeParaVermelho(Semaforo * semaforo);
 
-void vermelhoParaVerde(int leds[]);
+int vermelhoParaVerde(Semaforo * semaforo);
 
 void ligarLed(int led);
 

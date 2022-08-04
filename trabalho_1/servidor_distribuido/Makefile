@@ -24,4 +24,4 @@ roda:
 	make clean 
 	make all 
 	clear
-	make run porta=10165 ip=127.0.0.1 cruzamento=2
+	make run porta=10161 ip=127.0.0.1 cruzamento=2

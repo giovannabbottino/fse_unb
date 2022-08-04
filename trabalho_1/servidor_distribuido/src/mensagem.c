@@ -18,7 +18,7 @@ void handlerMensagem(char * mensagem){
         */
     if (strcmp(mensagem, "1") == 0){
         printf("\n[CLIENT] Enviando logs\n");
-        int mensagem[VETOR] = {mensagens->cruzamento,  mensagens->passagem_carro, mensagens->acima_velocidade,  mensagens->avanco_vermelho};
+        int mensagem[VETOR] = {mensagens->cruzamento,  mensagens->passagem_carro, mensagens->acima_velocidade,  mensagens->avanco_vermelho, mensagens->velocidade_media};
         enviaMensagem(mensagem);
     }
     else if (strcmp(mensagem, "2") == 0){
@@ -30,7 +30,7 @@ void handlerMensagem(char * mensagem){
         else if (cruzamento->estado == 2) {
             printf("\n[CLIENT] Saindo do modo emergencia\n");
             cruzamento->estado = 0;
-            verdeParaVermelho(cruzamento->semaforos[0]->leds);
+            verdeParaVermelho(cruzamento->semaforos[0]->leds); // liga semaforo principal led vermelho 
             ligarLed(cruzamento->semaforos[1]->leds[0]); // liga semaforo auxiliar led verde 
             ultimaMudanca();
         }
@@ -38,7 +38,6 @@ void handlerMensagem(char * mensagem){
     } else if (strcmp(mensagem, "3") == 0){
         if (cruzamento->estado != 3){
             printf("\n[CLIENT] Entrando do modo noturno\n");
-            limpaCruzamento(cruzamento);
             cruzamento->estado = 3;
         }   
         else if (cruzamento->estado == 3){

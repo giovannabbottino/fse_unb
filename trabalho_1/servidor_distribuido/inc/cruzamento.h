@@ -6,11 +6,14 @@
 #include <sys/time.h>
 #include <time.h>
 #include <pthread.h>
+#include <stdbool.h>
+
+#define IGNORE_CHANGE_BELOW_USEC 400
 
 typedef struct cruzamento{
     Semaforo * semaforos[2];
     int estado;
-}Cruzamento;
+} Cruzamento;
 
 
 typedef struct variaveisCruzamento{
@@ -35,10 +38,11 @@ int tipo;
 
 void *cruzamentoHandlerThread();
 void botao_apertado();
+void sensor_passagem();
 void ultimaMudanca();
 void handle();
 float time_diff(struct timeval *start, struct timeval *end);
-void limpaCruzamento(Cruzamento * cruzamento);
+void limpaCruzamento();
 void configuraCruzamento();
 void tipoCruzamento(int tipo);
 

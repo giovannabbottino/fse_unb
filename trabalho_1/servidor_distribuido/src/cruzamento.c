@@ -8,6 +8,7 @@ int tipo;
 static struct timeval ultimasMudancas;
 
 float duracao;
+bool mudar = false;
 
 void *cruzamentoHandlerThread() {
     printf("\nComecei a thread de cruzamento...\n");
@@ -15,25 +16,18 @@ void *cruzamentoHandlerThread() {
     limpaCruzamento(cruzamento);
 
     ligarLed(cruzamento->semaforos[0]->leds[0]); // liga semaforo principal led verde 
+    cruzamento->semaforos[0]->led_ligado = 0;
     ligarLed(cruzamento->semaforos[1]->leds[2]); // liga semaforo auxiliar led vermelho
+    cruzamento->semaforos[1]->led_ligado = 2;
     cruzamento->estado = 1;
 
     esvaziaMensagens();
-    mensagens->cruzamento = 2;
-    mensagens->passagem_carro = 0;
-    mensagens->acima_velocidade = 2;
-    mensagens->avanco_vermelho = 3;
     
     ultimaMudanca(); 
     printf("\nIniciando loop...\n");
     for(;;){
         handle();
     }
-}
-
-void botao_apertado(){
-    printf("\n>>Botão apertado!<<\n");
-    printf("Duracao %d\n", duracao);
 }
 
 void handle(){
@@ -43,30 +37,34 @@ void handle(){
     switch (cruzamento->estado) {
         /*
         estado 
-        1 = ligado
-        0 = desligado
+        1 = principal verde
+        0 = principal vermelho
         2 = emergencia
         3 = noturno
         */
         case 1: // ligado
-            if( duracao >= DELAY_PRINCIPAL_VERDE_MINIMO && duracao <= DELAY_PRINCIPAL_VERDE_MAXIMO){
-                verdeParaVermelho(cruzamento->semaforos[0]->leds);
-                vermelhoParaVerde(cruzamento->semaforos[1]->leds);
+            if((duracao >= DELAY_PRINCIPAL_VERDE_MINIMO && mudar == true) || duracao >= DELAY_PRINCIPAL_VERDE_MAXIMO){
+                cruzamento->semaforos[0]->led_ligado = verdeParaVermelho(cruzamento->semaforos[0]->leds);
+                cruzamento->semaforos[1]->led_ligado = vermelhoParaVerde(cruzamento->semaforos[1]->leds);
                 cruzamento->estado = 0;
+                mudar = false;
                 ultimaMudanca();
             }
             break;
         case 0: // desligado
-            if( duracao >= DELAY_AUXILIAR_VERDE_MINIMO && duracao <= DELAY_PRINCIPAL_VERDE_MAXIMO){
-                verdeParaVermelho(cruzamento->semaforos[1]->leds);
-                vermelhoParaVerde(cruzamento->semaforos[0]->leds);
+            if((duracao >= DELAY_AUXILIAR_VERDE_MINIMO && mudar == true) || duracao >= DELAY_AUXILIAR_VERDE_MAXIMO){
+                cruzamento->semaforos[0]->led_ligado = verdeParaVermelho(cruzamento->semaforos[1]->leds);
+                cruzamento->semaforos[0]->led_ligado = vermelhoParaVerde(cruzamento->semaforos[0]->leds);
                 cruzamento->estado = 1; // ligado
+                mudar = false;
                 ultimaMudanca();
             }
             break;
         case 2: // emergencia    
-            ligarLed(cruzamento->semaforos[0]->leds[0]);
-            ligarLed(cruzamento->semaforos[1]->leds[2]);
+            ligarLed(cruzamento->semaforos[0]->leds[0]); // liga semaforo principal verde
+             cruzamento->semaforos[0]->led_ligado = 0;
+            ligarLed(cruzamento->semaforos[1]->leds[2]); // liga semaforo auxiliar vermelho
+            cruzamento->semaforos[1]->led_ligado = 2;
             cruzamento->estado = 2;
             ultimaMudanca();
             break;
@@ -74,7 +72,9 @@ void handle(){
             limpaCruzamento(cruzamento);
             if( duracao >= DELAY_AMARELO ){
             ligarLed(cruzamento->semaforos[0]->leds[1]);
+            cruzamento->semaforos[0]->led_ligado = 1;
             ligarLed(cruzamento->semaforos[1]->leds[1]);
+            cruzamento->semaforos[1]->led_ligado = 1;
             cruzamento->estado = 3;
             delay(DELAY_AMARELO);
             ultimaMudanca();
@@ -83,17 +83,123 @@ void handle(){
     }
 }
 
-float time_diff(struct timeval *start, struct timeval *end){
-    return ((end->tv_sec - start->tv_sec) + 1e-6*(end->tv_usec - start->tv_usec) )* 1000.0;
+struct timeval ultimasMudancasBotao;
+
+void botao_apertado() {
+	struct timeval agora;
+	unsigned long duracao;
+
+	gettimeofday(&agora, NULL);
+    duracao = time_diff(&ultimasMudancasBotao, &agora);
+
+	if (duracao > IGNORE_CHANGE_BELOW_USEC) {
+        printf("\nPedestre!\n");
+        mudar = true;
+	}
+	ultimasMudancasBotao = agora;
 }
 
-void ultimaMudanca(){
-    gettimeofday(&ultimasMudancas, NULL);
+
+bool estado = false;
+void sensor_passagem(){
+    if (estado) {
+        if (cruzamento->estado == 1){
+            printf("\nAvanço no vermelho!\n");
+            soarAlarme();
+            mensagens->avanco_vermelho++;
+            estado = false;
+        }
+    }
+    else {
+        printf("\nCarro esperando passagem!\n");
+        estado = true;
+        mensagens->passagem_carro++;
+        if (cruzamento->estado == 1){
+            mudar = true;
+        }
+    }
 }
 
-void limpaCruzamento(Cruzamento * cruzamento){
-    apagaLeds(cruzamento->semaforos[0]);
-    apagaLeds(cruzamento->semaforos[1]);
+struct timeval ultimasMudancasVelocidadeA, ultimasMudancasVelocidadeB;
+bool estado_velocidade_a = false;
+bool estado_velocidade_b = false;
+void velocidade_a(){
+    if (estado_velocidade_a) {
+        if (cruzamento->estado == 0){
+            printf("\nAvanço no vermelho!\n");
+            soarAlarme();
+            mensagens->avanco_vermelho++;
+        } else {
+            gettimeofday(&ultimasMudancasVelocidadeA, NULL);
+        }
+    }
+    else {
+        printf("\nCarro esperando passagem!\n");
+        estado_velocidade_a = true;
+        mensagens->passagem_carro++;
+        if (cruzamento->estado == 0){
+            mudar = true;
+        }
+    }
+    if (estado_velocidade_b){
+        estado_velocidade_b = false;
+        
+        struct timeval agora;
+        unsigned long duracao;
+        gettimeofday(&agora, NULL);
+        duracao = time_diff(&ultimasMudancasVelocidadeB, &agora);
+        float velocidade = 3.6 * 1 / duracao;
+        if (velocidade >= 66){
+            printf("\nMuito Veloz!\n");
+            soarAlarme();
+            mensagens->acima_velocidade++;
+        } 
+        if (cruzamento->estado == 0){
+            printf("\nAvanço no vermelho!\n");
+            soarAlarme();
+            mensagens->avanco_vermelho++;
+        }
+        mensagens->velocidade_media = (velocidade + mensagens->velocidade_media) / 2;
+    } 
+}
+
+void velocidade_b(){
+    if (estado_velocidade_a){
+        estado_velocidade_a = false;
+        
+        struct timeval agora;
+        unsigned long duracao;
+        gettimeofday(&agora, NULL);
+        duracao = time_diff(&ultimasMudancasVelocidadeA, &agora);
+        float velocidade = 3.6 * 1 / duracao;
+        if (velocidade >= 66){
+            printf("\nMuito Veloz!\n");
+            soarAlarme();
+            mensagens->acima_velocidade++;
+        } 
+        if (cruzamento->estado == 0){
+            printf("\nAvanço no vermelho!\n");
+            soarAlarme();
+            mensagens->avanco_vermelho++;
+        }
+        mensagens->velocidade_media = (velocidade + mensagens->velocidade_media) / 2;
+    } 
+    if (estado_velocidade_b){
+        if (cruzamento->estado == 0){
+            printf("\nAvanço no vermelho!\n");
+            soarAlarme();
+            mensagens->avanco_vermelho++;
+        } else {
+            gettimeofday(&ultimasMudancasVelocidadeB, NULL);
+        }
+    } else {
+        printf("\nCarro esperando passagem!\n");
+        estado_velocidade_b = true;
+        mensagens->passagem_carro++;
+        if (cruzamento->estado == 0){
+            mudar = true;
+        }
+    }
 }
 
 void configuraCruzamento(){ 
@@ -119,12 +225,31 @@ void configuraCruzamento(){
             velocidade2
         );
 
-    wiringPiISR(s1->botao, INT_EDGE_FALLING, botao_apertado);
-    wiringPiISR(s2->botao, INT_EDGE_FALLING, botao_apertado);
+    wiringPiISR(s1->botao, INT_EDGE_BOTH, botao_apertado);
+    wiringPiISR(s2->botao, INT_EDGE_BOTH, botao_apertado);
+
+    wiringPiISR(s1->sensor_passagem, INT_EDGE_BOTH , sensor_passagem);
+    wiringPiISR(s2->sensor_passagem, INT_EDGE_BOTH , sensor_passagem);
+
+    wiringPiISR(s1->sensores_velocidade[0], INT_EDGE_BOTH , velocidade_a);
+    wiringPiISR(s1->sensores_velocidade[1], INT_EDGE_BOTH, velocidade_b);
 
     cruzamento->semaforos[0] = s2;
     cruzamento->semaforos[1] = s1;
     cruzamento->estado = 1; // ligado o cruzamento 0
+}
+
+float time_diff(struct timeval *start, struct timeval *end){
+    return ((end->tv_sec - start->tv_sec) + 1e-6*(end->tv_usec - start->tv_usec) )* 1000.0;
+}
+
+void ultimaMudanca(){
+    gettimeofday(&ultimasMudancas, NULL);
+}
+
+void limpaCruzamento(){
+    cruzamento->semaforos[0]->led_ligado = apagaLeds(cruzamento->semaforos[0]);
+    cruzamento->semaforos[1]->led_ligado = apagaLeds(cruzamento->semaforos[1]);
 }
 
 void tipoCruzamento(int t){

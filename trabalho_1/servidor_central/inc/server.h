@@ -11,13 +11,20 @@
 #include <strings.h> /* bzero() */
 #include <ctype.h> /* isdigit*/
 
-#define VETOR 4
+#define VETOR 5
 #define PDU 200
 
-void iniciaSocket(int porta, char * server_ip);
-void *serverSocketThread();
-void encerraSocket();
-void handlerMessageReceived();
-void handlerSendMessage();
+typedef struct args{
+    char * server_ip;
+    int porta;
+}Args;
+
+int client;
+
+int iniciaSocket(int porta, char * server_ip);
+void *serverSocketThread(void * args);
+void encerraSocket(int client, int server);
+void handlerMessageReceived(int client, int server);
+void handlerSendMessage(int client, char * messagem);
 
 #endif

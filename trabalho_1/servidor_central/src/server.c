@@ -2,18 +2,13 @@
 #include <string.h>
 #include "menu.h"
 
-struct sockaddr_in serverSocket, clientSocket; /* socket do servidor */
-char *server_ip;
-unsigned short porta;
-int server, client;
+int client;
 
 int vetor[VETOR] = {0};
 
-void iniciaSocket(int porta, char * server_ip) {
-    server_ip = server_ip;
-    porta = porta;
+int iniciaSocket(int porta, char * server_ip) {
     /* Criacao do socket TCP */
-    server = socket(AF_INET, SOCK_STREAM, 0);
+    int server = socket(AF_INET, SOCK_STREAM, 0);
         /*
         * ARPA INTERNET PROTOCOLS -- IPv4
         * SOCK_STREAM orientado a conexão com transmissão de fluxos de bytes, sequencial e bidirecional
@@ -24,6 +19,8 @@ void iniciaSocket(int porta, char * server_ip) {
         exit(1);
     }
     printf("\n[SERVER] Criacao do socket TCP\n");
+	
+	struct sockaddr_in serverSocket;
 
 	/* Preenchendo informacoes sobre o cliente */
 	serverSocket.sin_family = AF_INET;
@@ -40,14 +37,14 @@ void iniciaSocket(int porta, char * server_ip) {
 		perror("\n[SERVER] Não pode escutar server socket\n");
 		exit(1);
 	}
+
+	return server;
 }
 
-void *serverSocketThread(){
-	
-	if(listen(server, 10) < 0) {
-		perror("[SERVER] Não é possivel escutar server socket\n");
-		exit(1);
-	}
+void *serverSocketThread(void *args){
+	Args *actual_args = args;
+	struct sockaddr_in clientSocket;
+	int server = iniciaSocket(actual_args->porta, actual_args->server_ip);
 	int size = sizeof(clientSocket);
 	 /* Aceita conexoes direta entre o servidor e cliente */
     client = accept(server, (struct sockaddr *) &clientSocket, &size);
@@ -57,22 +54,22 @@ void *serverSocketThread(){
     } 
     printf("[SERVER] Aceita conexoes direta\n");
 
-	handlerMessageReceived();
+	handlerMessageReceived(client, server);
 }
 
-void encerraSocket() {
+void encerraSocket(int client, int server) {
 	close(client);
 	close(server);
 }
 
-void handlerMessageReceived() {
+void handlerMessageReceived(int client, int server) {
 	int retorno_msg;
 	while (1) {
 		retorno_msg = recv(client, vetor, VETOR * sizeof(int), 0);
 		
 		if(retorno_msg == 0){
 			printf("[SERVER] Conexão Encerrada!\n");
-			encerraSocket(client);
+			encerraSocket(client, server);
 			exit(0);
 		}else if (retorno_msg < 0){
 			printf("[SERVER] Não foi possivel receber a mensagem");
@@ -81,11 +78,12 @@ void handlerMessageReceived() {
 			printf("\t\t\tPassagem de carros: %d\n", vetor[1]);
 			printf("\t\t\tAcima da velocidade: %d\n", vetor[2]);
 			printf("\t\t\tAvanço no vermelho: %d\n", vetor[3]);
+			printf("\t\t\tVelocidade média: %f\n", vetor[4]);
 		}
 	}
 }
 
-void handlerSendMessage(messagem) {
+void handlerSendMessage(int client, char * messagem) {
 	if(send(client, messagem, sizeof(messagem), 0) < 0){
 		perror("[SERVER] Falha no envio");
 	} else{

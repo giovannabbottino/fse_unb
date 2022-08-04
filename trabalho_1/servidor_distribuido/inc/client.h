@@ -13,7 +13,7 @@
 
 #include "mensagem.h"
 
-#define VETOR 4
+#define VETOR 5
 #define PDU 200
 
 void *clientSocketThread();

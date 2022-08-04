@@ -1,10 +1,11 @@
 #include "semaforo.h"
 #include "info.h"
 
-void apagaLeds(Semaforo * semaforo){
+int apagaLeds(Semaforo * semaforo){
     for(int i=0; i<=2; i++){
         desligarLed(semaforo->leds[i]);
     }
+    return 3;
 }
 
 Semaforo * configuraSemaforo(int leds[], int botao, int sensor_passagem, int sensor_velocidade[]){
@@ -32,23 +33,27 @@ Semaforo * configuraSemaforo(int leds[], int botao, int sensor_passagem, int sen
     return semaforo;
 }
 
-void verdeParaVermelho(int leds[]){
-    desligarLed(leds[0]); // desliga led verde
-    ligarLed(leds[1]); // liga led amarelo
+int verdeParaVermelho(Semaforo * semaforo){
+    desligarLed(semaforo->leds[0]); // desliga led verde
+    ligarLed(semaforo->leds[1]); // liga led amarelo
     delay(DELAY_AMARELO);
 
-    desligarLed(leds[1]); // desliga led amarelo
-    ligarLed(leds[2]); // liga led vermelho
+    desligarLed(semaforo->leds[1]); // desliga led amarelo
+    ligarLed(semaforo->leds[2]); // liga led vermelho
     delay(DELAY_VERMELHO_TOTAL);
+    
+    return 2;
 }
 
-void vermelhoParaVerde(int leds[]){
-    desligarLed(leds[2]); // desliga led vermelho
-    ligarLed(leds[0]); // liga led verde
+int vermelhoParaVerde(Semaforo * semaforo){
+    desligarLed(semaforo->leds[2]); // desliga led vermelho
+    ligarLed(semaforo->leds[0]); // liga led verde
+    return 0;
 }
 
 void ligarLed(int led){
     digitalWrite(led, HIGH);
+    return led;
 }
 
 void desligarLed(int led){

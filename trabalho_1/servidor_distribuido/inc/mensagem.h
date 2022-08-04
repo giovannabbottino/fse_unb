@@ -15,6 +15,7 @@ typedef struct mensagem{
     int passagem_carro;
     int acima_velocidade;
     int avanco_vermelho;
+    float velocidade_media;
 }Mensagem;
 
 Mensagem * mensagens;
