@@ -3,7 +3,6 @@
 
 #include "cruzamento.h"
 #include "client.h"
-#include "menu.h"
 
 pthread_t socketThread, cruzamentoThread;
 

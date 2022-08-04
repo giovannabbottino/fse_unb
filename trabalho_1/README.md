@@ -49,4 +49,17 @@ make all
 ```
 make run porta=10161 ip=127.0.0.1 cruzamento=1
 ```
+
+```
+make run porta=10165 ip=127.0.0.1 cruzamento=2
+```
+
+Obs: Na Rasp44 não foi possivel testar, apesar de conter o mesmo codigo sempre dava erros como `undefined reference to `wiringPiSetup'` 
+```
+make run porta=10167 ip=127.0.0.1 cruzamento=1
+```
+
+```
+make run porta=10169 ip=127.0.0.1 cruzamento=2
+```
 Sendo a porta um inteiro entre 10161 e 10170, de acordo com o que foi disponibilizado pelo professor, já o ip o valor do servidor central, e o cruzamento entre 1 e 2.

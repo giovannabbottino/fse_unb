@@ -7,6 +7,9 @@
 #include <time.h>
 #include <pthread.h>
 #include <stdbool.h>
+#include <wiringPi.h>
+
+#include "mensagem.h"
 
 #define IGNORE_CHANGE_BELOW_USEC 400
 
@@ -37,13 +40,15 @@ Cruzamento * cruzamento;
 int tipo;
 
 void *cruzamentoHandlerThread();
+void handle();
 void botao_apertado();
 void sensor_passagem();
-void ultimaMudanca();
-void handle();
-float time_diff(struct timeval *start, struct timeval *end);
-void limpaCruzamento();
+void velocidade_a();
+void velocidade_b();
 void configuraCruzamento();
+float time_diff(struct timeval *start, struct timeval *end);
+void ultimaMudanca();
+void limpaCruzamento();
 void tipoCruzamento(int tipo);
 
 #endif

@@ -31,6 +31,7 @@ void iniciaSocket(int porta, char * server_ip) {
 	/* Inicia a conexão no socket */
 	if (connect(client, (struct sockaddr *)&server, sizeof(server))<0){
 		perror("\n[CLIENT] Não pode conectar no Socket");
+        fechaSocket();
 		exit(0);
 	}
 }

@@ -1,5 +1,4 @@
 #include "semaforo.h"
-#include "info.h"
 
 int apagaLeds(Semaforo * semaforo){
     for(int i=0; i<=2; i++){

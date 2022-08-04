@@ -8,6 +8,7 @@ void esvaziaMensagens(){
     mensagens->passagem_carro = 0;
     mensagens->acima_velocidade = 0;
     mensagens->avanco_vermelho = 0;
+    mensagens->velocidade_media = 0.0;
 }
 
 void handlerMensagem(char * mensagem){
@@ -20,6 +21,7 @@ void handlerMensagem(char * mensagem){
         printf("\n[CLIENT] Enviando logs\n");
         int mensagem[VETOR] = {mensagens->cruzamento,  mensagens->passagem_carro, mensagens->acima_velocidade,  mensagens->avanco_vermelho, mensagens->velocidade_media};
         enviaMensagem(mensagem);
+        esvaziaMensagens();
     }
     else if (strcmp(mensagem, "2") == 0){
         if (cruzamento->estado != 2){

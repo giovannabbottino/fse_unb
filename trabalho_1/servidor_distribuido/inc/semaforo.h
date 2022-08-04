@@ -8,6 +8,8 @@
 
 #include <unistd.h>
 
+#include "info.h"
+
 typedef struct semaforo{
     int leds[3];
     int botao;
@@ -17,15 +19,12 @@ typedef struct semaforo{
 }Semaforo;
 
 int apagaLeds(Semaforo * semaforo);
-
-int verdeParaVermelho(Semaforo * semaforo);
-
-int vermelhoParaVerde(Semaforo * semaforo);
-
-void ligarLed(int led);
-
-void desligarLed(int led);
-
 Semaforo * configuraSemaforo(int leds[], int botao, int sensor_passagem, int sensor_velocidade[]);
+int verdeParaVermelho(Semaforo * semaforo);
+int vermelhoParaVerde(Semaforo * semaforo);
+void ligarLed(int led);
+void desligarLed(int led);
+void soarAlarme();
+
 
 #endif

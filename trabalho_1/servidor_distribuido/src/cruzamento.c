@@ -1,5 +1,4 @@
 #include "cruzamento.h"
-#include "mensagem.h"
 
 VariaveisCruzamento var = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 Cruzamento * cruzamento = {NULL};

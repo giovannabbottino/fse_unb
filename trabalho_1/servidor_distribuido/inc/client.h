@@ -16,9 +16,9 @@
 #define VETOR 5
 #define PDU 200
 
+void iniciaSocket(int porta, char * server_ip) ;
 void *clientSocketThread();
 void enviaMensagem(int * mensagem);
-void iniciaSocket(int porta, char * server_ip) ;
 void fechaSocket();
 
 #endif
