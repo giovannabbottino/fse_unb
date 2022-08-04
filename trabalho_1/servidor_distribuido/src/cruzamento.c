@@ -123,7 +123,7 @@ struct timeval ultimasMudancasVelocidadeA, ultimasMudancasVelocidadeB;
 bool estado_velocidade_a = false;
 bool estado_velocidade_b = false;
 void velocidade_a(){
-    if (estado_velocidade_a) {
+    if (estado_velocidade_a) { // saiu do local
         if (cruzamento->estado == 0){
             printf("\nAvanço no vermelho!\n");
             soarAlarme();
@@ -132,7 +132,7 @@ void velocidade_a(){
             gettimeofday(&ultimasMudancasVelocidadeA, NULL);
         }
     }
-    else {
+    else { // entrou do local
         printf("\nCarro esperando passagem!\n");
         estado_velocidade_a = true;
         mensagens->passagem_carro++;
@@ -140,14 +140,15 @@ void velocidade_a(){
             mudar = true;
         }
     }
-    if (estado_velocidade_b){
+    if (estado_velocidade_b){ // estava em b agora esta em a
         estado_velocidade_b = false;
         
         struct timeval agora;
         unsigned long duracao;
         gettimeofday(&agora, NULL);
         duracao = time_diff(&ultimasMudancasVelocidadeB, &agora);
-        float velocidade = 3.6 * 1 / duracao;
+        printf("\nDuracao! %d\n", duracao);
+        float velocidade = 3.6 * 10 / duracao;
         if (velocidade >= 66){
             printf("\nMuito Veloz!\n");
             soarAlarme();
@@ -165,28 +166,6 @@ void velocidade_a(){
 }
 
 void velocidade_b(){
-    if (estado_velocidade_a){
-        estado_velocidade_a = false;
-        
-        struct timeval agora;
-        unsigned long duracao;
-        gettimeofday(&agora, NULL);
-        duracao = time_diff(&ultimasMudancasVelocidadeA, &agora);
-        float velocidade = 3.6 * 1 / duracao;
-        if (velocidade >= 66){
-            printf("\nMuito Veloz!\n");
-            soarAlarme();
-            mensagens->acima_velocidade++;
-        } 
-        if (cruzamento->estado == 0){
-            printf("\nAvanço no vermelho!\n");
-            soarAlarme();
-            mensagens->avanco_vermelho++;
-        }
-        printf("\nVelocidade: %f!\n", velocidade);
-        mensagens->velocidade_media = (velocidade + mensagens->velocidade_media) / 2;
-        printf("\nVelocidade media: %f!\n", mensagens->velocidade_media);
-    } 
     if (estado_velocidade_b){
         if (cruzamento->estado == 0){
             printf("\nAvanço no vermelho!\n");
@@ -203,6 +182,29 @@ void velocidade_b(){
             mudar = true;
         }
     }
+     if (estado_velocidade_a){
+        estado_velocidade_a = false;
+        
+        struct timeval agora;
+        unsigned long duracao;
+        gettimeofday(&agora, NULL);
+        duracao = time_diff(&ultimasMudancasVelocidadeA, &agora);
+        printf("\nDuracao! %d\n", duracao);
+        float velocidade = 3.6 * 10 / duracao;
+        if (velocidade >= 66){
+            printf("\nMuito Veloz!\n");
+            soarAlarme();
+            mensagens->acima_velocidade++;
+        } 
+        if (cruzamento->estado == 0){
+            printf("\nAvanço no vermelho!\n");
+            soarAlarme();
+            mensagens->avanco_vermelho++;
+        }
+        printf("\nVelocidade: %f!\n", velocidade);
+        mensagens->velocidade_media = (velocidade + mensagens->velocidade_media) / 2;
+        printf("\nVelocidade media: %f!\n", mensagens->velocidade_media);
+    } 
 }
 
 void configuraCruzamento(){ 
