@@ -10,6 +10,28 @@ Através de botões no painel de controle (Via UART);
 Através de entrada de teclado no terminal;
 Seguindo os tempo e temperaturas pré-definidas para cada tipo de alimento.
 
+## Executar
+
+1. Clone esse [repositorio](https://github.com/giovannabbottino/fse_unb) 
+```
+git clone https://github.com/giovannabbottino/fse_unb
+```
+2. Entre na pasta `fse_unb/trabalho_2`
+```
+cd fse_unb/trabalho_2
+```
+3. Se necessario, rode:
+```
+make clean
+```
+4. Dê build 
+```
+make all
+```
+5. Então, finalmente:
+```
+make run
+```
 ## Info para o desenvolvimento
 ```
 git config user.name "giovannabbottino"
