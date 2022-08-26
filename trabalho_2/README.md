@@ -36,7 +36,10 @@ make run
 ```
 git config user.name "giovannabbottino"
 git config user.email giovannabbottino@gmail.com
-https://youtu.be/87kvtAH7zsM
+
+https://youtu.be/guuRJ7SXNvk
+
+http://164.41.98.25:443/dashboard/a4b10e40-1d8b-11ed-a520-7b07ee36c1c6?publicId=ba042a80-0322-11ed-9f25-414fbaf2b065
 
 Execício 1 - UART - Rasp44 
 
@@ -44,5 +47,5 @@ ssh <user>@164.41.98.17 -p 13508
 
 Exercício 2 - UART MODBUS - Rasp43
 
-ssh <user>@164.41.98.26 -p 13508
+sh <user>@164.41.98.15 -p 13508
 ```
