@@ -1,8 +1,5 @@
 #include "menu.h"
-
-double kp;
-double ki;
-double kd;
+#include "pid.h"
 
 void menuInicial(){
     int escolha;
@@ -14,26 +11,24 @@ void menuInicial(){
 
     scanf("%d", &escolha);
 
-    switch(){
+    switch(escolha){
         case 1:
-            kp = 30.0;
-            ki = 0.2;
-            kd = 400.0;
+            pid_configura_constantes(30.0, 0.2, 400.0);
             break;
         case 2:
-            kp = 20.0;
-            ki = 0.1;
-            kd = 100.0;
+            pid_configura_constantes(20.0, 0.1, 100.0);
             break;
         case 3:
-            printf("\nkp: ");
-            scanf("%f", &kp);
-
-            printf("\nki: ");
-            scanf("%f", &ki);
-
-            printf("\nkd: ");
-            scanf("%f", &kd);
+            printf("\nKp: ");
+            double Kp;
+            scanf("%f", &Kp);
+            double Ki;
+            printf("\nKi: ");
+            scanf("%f", &Ki);
+            double Kd;
+            printf("\nKd: ");
+            scanf("%f", &Kd);
+            pid_configura_constantes(Kp, Ki, Kd);
             break;
         default:
             printf("\nSelecione uma opção válida\n");
