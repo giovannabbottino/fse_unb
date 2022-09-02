@@ -3,6 +3,8 @@
 #include <signal.h>
 #include <pthread.h>
 
+#include "menu.h"
+
 pthread_t menuThread;
 
 void cancelaExecucao() {
@@ -12,10 +14,19 @@ void cancelaExecucao() {
 }
 
 int main(int argc, const char * argv[]) {
-   signal(SIGINT, cancelaExecucao);
+    signal(SIGINT, cancelaExecucao);
 
-   pthread_create(&menuThread, NULL, &menuHandlerThread, NULL);
-   pthread_detach(menuThread);
+    pthread_create(&menuThread, NULL, &menuHandlerThread, NULL);
+    pthread_detach(menuThread);
 
-   return 0;
+    if(lcd_init() == -1){
+        perror("Error ao iniciar lcd")
+        exit(1);
+    }
+    lcd_clear();
+    lcd_type_line("    SISTEMA");
+    lcd_set_line(LCD_LINE2);
+    lcd_type_line(" INICIALIZANDO");
+
+    return 0;
 }
