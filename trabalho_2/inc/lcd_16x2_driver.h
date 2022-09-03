@@ -2,8 +2,8 @@
 #define LCD_16x2_DRIVER_H_
 
 
-#define LCD_LINE1 0x80
-#define LCD_LINE2 0xC0
+#define LCD_LINE_1 0x80
+#define LCD_LINE_2 0xC0
 
 
 int lcd_init(void);

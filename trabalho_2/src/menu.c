@@ -1,7 +1,36 @@
 #include "menu.h"
-#include "pid.h"
 
-void menuInicial(){
+void menu_modo(){
+    if(lcd_init() == -1) exit(1);
+    lcd_clear();
+
+    int escolha;
+    printf("\n<<<<< MENU >>>>>\n");
+    printf("Defina o modo\n");
+    printf("1. Terminal\n");
+    printf("2. UART\n");
+
+    switch(escolha){
+        case 1:
+            printf("Iniciando modo terminal...\n");
+            printf("Defina a temperatura:\n");
+            float tr;
+            scanf("%f",&tr);
+            terminalHandler(tr);
+            break;
+        case 2:
+            printf("Iniciando modo UART...\n");
+            printf("Aguardando...\n");
+            uartHandler();
+            break;
+        default:
+            printf("\nSelecione uma opção válida\n");
+            menu_modo();
+    }
+}
+
+
+void menu_inicial(){
     int escolha;
     printf("\n<<<<< MENU >>>>>\n");
     printf("Defina as constantes, para:\n");
@@ -32,13 +61,7 @@ void menuInicial(){
             break;
         default:
             printf("\nSelecione uma opção válida\n");
-            menuInicial();
+            menu_inicial();
     }
+    menu_modo();
 }
-
-void *menuHandlerThread(){
-   menuInicial();
-   while(1){
-
-   }
-};

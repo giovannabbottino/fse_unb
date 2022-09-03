@@ -1,7 +1,12 @@
 #ifndef MENU_H
 #define MENU_H
 
-void menuInicial();
-void *menuHandlerThread();
+#include "pid.h"
+#include "handler.h"
+#include "temperatura.h"
+#include "lcd_16x2_driver.h"
+
+void menu_modo();
+void menu_inicial();
 
 #endif
