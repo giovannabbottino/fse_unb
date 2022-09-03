@@ -32,19 +32,3 @@ make all
 ```
 make run
 ```
-## Info para o desenvolvimento
-```
-git config user.name "giovannabbottino"
-git config user.email giovannabbottino@gmail.com
-
-https://youtu.be/i7RPcSf18Qs
-
-Rasp43
-http://164.41.98.25:443/dashboard/657fba30-2706-11ed-be92-e3a443145aec?publicId=ba042a80-0322-11ed-9f25-414fbaf2b065
-Rasp44
-http://164.41.98.25:443/dashboard/a4b10e40-1d8b-11ed-a520-7b07ee36c1c6?publicId=ba042a80-0322-11ed-9f25-414fbaf2b065
-
-Exercício 2 - UART MODBUS - Rasp43
-
-sh <user>@164.41.98.15 -p 13508
-```

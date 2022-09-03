@@ -1,13 +1,15 @@
-#ifndef CRUZAMENTO_H
-#define CRUZAMENTO_H
+#ifndef UART_H
+#define UART_H
 
-#include <unistd.h>         //Used for UART
-#include <fcntl.h>          //Used for UART
-#include <termios.h>        //Used for UART
+#include <stdio.h>
+#include <stdlib.h>
 
-void uart_init(char * uart_filestream_path);
-int uart_read(Byte *buffer, unsigned int buffer_size);
-int uart_write(Byte *buffer, unsigned int buffer_size);
+#include <unistd.h>         
+#include <fcntl.h>          
+#include <termios.h>        
+
 void uart_close();
-
+int uart_config();
+int uart_read(unsigned char* message, unsigned int size);
+int uart_write(unsigned char* buffer, unsigned int index);
 #endif

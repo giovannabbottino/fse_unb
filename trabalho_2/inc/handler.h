@@ -9,8 +9,16 @@
 #include "temperatura.h"
 #include "lcd_16x2_driver.h"
 #include "esp32.h"
+#include "menu.h"
+#include "csv.h"
+#include "tempo.h"
 
+int comando;
+float tr;
+
+void desligarHandler();
+void userHandler(int comando);
 void uartHandler();
-void terminalHandler(float tr);
+void terminalHandler();
 
 #endif

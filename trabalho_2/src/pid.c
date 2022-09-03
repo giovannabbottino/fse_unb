@@ -16,6 +16,7 @@ void pid_configura_constantes(double Kp_, double Ki_, double Kd_){
     Kp = Kp_;
     Ki = Ki_;
     Kd = Kd_;
+    printf("\nKp = %.2f\tKi = %.2f\tKd = %.2f\n", Kp, Ki, Kd);
 }
 
 void pid_atualiza_referencia(float referencia_){

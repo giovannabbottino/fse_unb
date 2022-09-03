@@ -1,81 +1,74 @@
 #include "modbus.h"
-#include "crc16.h"
 
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
+static unsigned char device_cod = 0x01;
+static unsigned char matricula[] = {1, 2, 6, 7}; // 170011267
+#define SLEEP_TIME 100
+#define TIMEOUT 5
 
-static Byte device_address_cod = 0x00;
-static Byte function_cod = 0x00;
-static Byte sub_cod = 0x00;
-static const Byte matricula[] = {1, 2, 6, 7}; // 170011267
+unsigned char func_cod = 0x00;
+unsigned char func_sub_cod = 0x00;
 
-static unsigned int timeout_microsecond = 10000;
-static Byte timeout_time = 15;
-
-
-void modbus_open(){
-    uart_init();
-}
-
-void modbus_init(Byte device_address_cod_, Byte function_cod_, Byte sub_cod_){
-    device_address_cod = device_address_cod_;
-    function_cod = function_cod_;
-    sub_cod = sub_cod_;
-}
-
-int modbus_read(Byte *message, Byte message_size){
-
-    int size = 0;
-    unsigned int timeout = timeout_time;
-
-    size = uart_read(message, message_size);
-    while(size <= 0 && timeout != 0){
-        usleep(timeout_microsecond);
-        size = uart_read(message, message_size);
-        timeout--;
+void modbus_config(unsigned char cod, unsigned char sub_cod){
+    int status = -1;
+    while(status == -1){
+        status = uart_config();
+        if(status == -1){
+            modbus_close();
+            usleep(300000);
+        }
     }
 
-    if(size <= 0) return size;
-
-    unsigned short crc;
-    int length = size - sizeof(short);
-    memcpy(&crc, &message[length], sizeof(short));
-    unsigned short expected_crc = calculate_crc(message, length);
-
-    if(expected_crc == crc)
-        return size;
-    return -1;
-}
-
-int modbus_write(const Byte *message, Byte message_size){
-    
-    Byte index = 0;
-    Byte size = 7 * sizeof(Byte) + message_size + sizeof(short);
-    Byte *buffer = malloc(size);
-
-    memcpy(&buffer[index++], &device_address_cod, sizeof(Byte));
-    memcpy(&buffer[index++], &function_cod, sizeof(Byte));
-    memcpy(&buffer[index++], &sub_cod, sizeof(Byte));
-    
-    memcpy(&buffer[index], matricula, sizeof(matricula));
-    index += sizeof(matricula);
-
-    if(message != NULL){
-        memcpy(&buffer[index], message, message_size);
-        index += message_size;
-    }
-
-    unsigned short crc = calculate_crc(buffer, index);
-    memcpy(&buffer[index], &crc, sizeof(short));
-    index += sizeof(short);
-
-    size = uart_write(buffer, index);
-    free(buffer);
-
-    return size;
+    func_cod = cod;
+    func_sub_cod = sub_cod;
 }
 
 void modbus_close(){
     uart_close();
+}
+
+int modbus_receive(unsigned char *message, unsigned char size){
+    int len = 0;
+
+    for(int i = 0; i < TIMEOUT; i++){
+        usleep(SLEEP_TIME * 1000);
+        len = uart_read(message, size);
+        if(len != 0) break;
+    }
+
+    if(len <= 0) return len;
+
+    unsigned short crc;
+    int len_crc = len - sizeof(unsigned short);
+    unsigned short exp_crc = calcula_CRC(message, len_crc);
+    memcpy(&crc, &message[len_crc], sizeof(unsigned short));
+
+    if(crc != exp_crc)
+        return -1;
+    return len;
+}
+
+int modbus_send(unsigned char *message, unsigned char size){
+    unsigned char *buffer = malloc(255);
+
+    int count = 0;
+    memcpy(&buffer[count++], &device_cod, sizeof(unsigned char));
+    memcpy(&buffer[count++], &func_cod, sizeof(unsigned char));
+    memcpy(&buffer[count++], &func_sub_cod, sizeof(unsigned char));
+
+    memcpy(&buffer[count], matricula, sizeof(matricula));
+    count += sizeof(matricula);
+
+    memcpy(&buffer[count], message, size);
+    count += size;
+
+    unsigned short crc = calcula_CRC(buffer, count);
+
+    memcpy(&buffer[count], &crc, sizeof(unsigned short));
+    count += sizeof(unsigned short);
+
+    int final_size = uart_write(buffer,count);
+
+    free(buffer);
+
+    return final_size;
 }
