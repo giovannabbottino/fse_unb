@@ -10,6 +10,8 @@
 #include "wifi.h"
 #include "http_client.h"
 #include "mqtt.h"
+#include "led.h"
+#include "button.h"
 
 xSemaphoreHandle conexaoWifiSemaphore;
 xSemaphoreHandle conexaoMQTTSemaphore;
@@ -38,7 +40,7 @@ void trataComunicacaoComServidor(void * params)
        sprintf(mensagem, "{\"temperatura\": %f}", temperatura);
        mqtt_envia_mensagem("v1/devices/me/telemetry", mensagem);
 
-       sprintf(JsonAttributes, "{\"quantidade de pinos\": 5,\n\"umidade\":20}");
+       sprintf(JsonAttributes, "{\"quantidade de pinos\": 5,\n\"umidade\":20,{\"statusLed\": %d}", get_led_state());
        mqtt_envia_mensagem("v1/devices/me/attributes",JsonAttributes);
        vTaskDelay(3000 / portTICK_PERIOD_MS);
     }
@@ -61,4 +63,5 @@ void app_main(void)
 
     xTaskCreate(&conectadoWifi,  "Conexão ao MQTT", 4096, NULL, 1, NULL);
     xTaskCreate(&trataComunicacaoComServidor, "Comunicação com Broker", 4096, NULL, 1, NULL);
+    xTaskCreate(&set_button_state, "Butão ESP", 4096, NULL, 1, NULL);
 }
