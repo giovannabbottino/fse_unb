@@ -8,6 +8,7 @@
 #include "esp_log.h"
 #include "driver/ledc.h"
 #include "rgb_led.h"
+#include "esp_log.h"
 
 #define BLINK_GPIO 2
 #define TAG "LED"
@@ -53,7 +54,7 @@ static void rgb_led_pwm_init(void){
 			.gpio_num   = ledc_ch[rgb_ch].gpio,
 			.intr_type  = LEDC_INTR_DISABLE,
 			.speed_mode = ledc_ch[rgb_ch].mode,
-			.timer_sel  = ledc_ch[rgb_ch].timer_index,
+			.timer_sel  = ledc_ch[rgb_ch].timer_index
 		};
 		ledc_channel_config(&ledc_channel);
 	}
@@ -69,42 +70,33 @@ static void rgb_led_pwm_init(void){
     g_pwm_init_handle = true;
 }
 
-
-
 void set_red(char * value){
     red = atoi(value);
     if(!g_pwm_init_handle){
-        rgb_led_pwm_init
+        rgb_led_pwm_init();
     }
     ledc_set_duty(ledc_ch[0].mode, ledc_ch[0].channel, red);
 	ledc_update_duty(ledc_ch[0].mode, ledc_ch[0].channel);
+    ESP_LOGI(TAG, "Red: %d", red);
 }
+
 void set_green(char * value){
     green = atoi(value);
     if(!g_pwm_init_handle){
-        rgb_led_pwm_init
+        rgb_led_pwm_init();
     }
     ledc_set_duty(ledc_ch[0].mode, ledc_ch[0].channel, green);
 	ledc_update_duty(ledc_ch[0].mode, ledc_ch[0].channel);
-
+    ESP_LOGI(TAG, "Green: %d", green);
 }
+
 void set_blue(char * value){
     blue = atoi(value);
     if(!g_pwm_init_handle){
-        rgb_led_pwm_init
+        rgb_led_pwm_init();
     }
     ledc_set_duty(ledc_ch[0].mode, ledc_ch[0].channel, blue);
 	ledc_update_duty(ledc_ch[0].mode, ledc_ch[0].channel);
+    ESP_LOGI(TAG, "Blue: %d", blue);
 }
 
-char * get_rgb_led_state(){
-    char * state;
-    strcat(state, "R: ");
-    strcat(state, itoa(red));
-    strcat(state, " G: ");
-    strcat(state, itoa(green));
-    strcat(state, " B: ");
-    strcat(state, itoa(blue));
-    strcat(state, "\n ");
-    return state;
-}

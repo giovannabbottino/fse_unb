@@ -23,6 +23,4 @@ void set_red(char * value);
 void set_green(char * value);
 void set_blue(char * value);
 
-char * get_rgb_led_state();
-
 #endif
