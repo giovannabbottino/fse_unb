@@ -3,4 +3,6 @@
 
 void set_led_state();
 
+int get_led_state();
+
 #endif
