@@ -1,6 +1,6 @@
-#ifndef WIFI_H_
-#define WIFI_H_
+#ifndef WIFI_H
+#define WIFI_H
 
-void wifi_setup(void);
+void wifi_start();
 
 #endif

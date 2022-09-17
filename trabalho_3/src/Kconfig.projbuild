@@ -1,0 +1,27 @@
+
+
+menu "** Project Configuration"
+
+    menu "WIFI Configuration"
+
+        config ESP_WIFI_SSID
+            string "WiFi SSID"
+            default "ssid"
+            help
+                SSID (network name).
+
+        config ESP_WIFI_PASSWORD
+            string "WiFi Password"
+            default "password"
+            help
+                WiFi password (WPA or WPA2).
+        
+        config ESP_MAXIMUM_RETRY
+        int "Maximum retry"
+        default 30
+        help
+            Set the Maximum retry to avoid station reconnecting to the AP unlimited when the AP is really inexistent.
+
+    endmenu
+
+endmenu

@@ -129,6 +129,19 @@ CONFIG_PARTITION_TABLE_MD5=y
 # end of Partition Table
 
 #
+# ** Project Configuration
+#
+
+#
+# WIFI Configuration
+#
+CONFIG_ESP_WIFI_SSID="ALHN-3931 Oi Fibra 2.4G"
+CONFIG_ESP_WIFI_PASSWORD="2957392617"
+CONFIG_ESP_MAXIMUM_RETRY=30
+# end of WIFI Configuration
+# end of ** Project Configuration
+
+#
 # Compiler options
 #
 CONFIG_COMPILER_OPTIMIZATION_DEFAULT=y
