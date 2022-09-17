@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
+
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "driver/gpio.h"
@@ -14,9 +15,9 @@
 #define TAG "LED"
 
 bool g_pwm_init_handle = false;
-int red = 0;
-int green = 0;
-int blue = 0;
+uint8_t red = 0;
+uint8_t green = 0;
+uint8_t blue = 0;
 
 static void rgb_led_pwm_init(void){
     int rgb_ch;
@@ -70,8 +71,8 @@ static void rgb_led_pwm_init(void){
     g_pwm_init_handle = true;
 }
 
-void set_red(char * value){
-    red = atoi(value);
+void set_red(uint8_t value){
+    red = value;
     if(!g_pwm_init_handle){
         rgb_led_pwm_init();
     }
@@ -80,8 +81,8 @@ void set_red(char * value){
     ESP_LOGI(TAG, "Red: %d", red);
 }
 
-void set_green(char * value){
-    green = atoi(value);
+void set_green(uint8_t value){
+    green = value;
     if(!g_pwm_init_handle){
         rgb_led_pwm_init();
     }
@@ -90,8 +91,8 @@ void set_green(char * value){
     ESP_LOGI(TAG, "Green: %d", green);
 }
 
-void set_blue(char * value){
-    blue = atoi(value);
+void set_blue(uint8_t value){
+    blue = value;
     if(!g_pwm_init_handle){
         rgb_led_pwm_init();
     }
