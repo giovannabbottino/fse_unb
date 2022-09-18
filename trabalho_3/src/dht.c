@@ -26,9 +26,11 @@ void sensor(){
 }
 
 int get_umidade(){
+    umidade = DHT11_read().humidity;
     return umidade;
 }
 
 int get_temperatura(){
+    temperatura = DHT11_read().temperature;
     return temperatura;
 }
