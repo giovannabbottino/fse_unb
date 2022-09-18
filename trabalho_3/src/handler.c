@@ -33,7 +33,7 @@ void handler_event_data(char * data){
     }else if (strcmp(method_value, "getValue") == 0){
         /* {"method":"getValue","params":""} */
         char JsonAttributes[500];
-        sprintf(JsonAttributes, "{\"statusLed\": %d, \"getRedValue\": %d, \"getGreenValue\": %d, \"getBlueValue\": %d}", get_led_state(), get_red(), get_green(), get_blue());
+        sprintf(JsonAttributes, "{\"statusLed\": %d, \"RED\": %d, \"GREEN\": %d, \"BLUE\": %d}", get_led_state(), get_red(), get_green(), get_blue());
         mqtt_envia_mensagem("v1/devices/me/attributes",JsonAttributes);
     }
 }

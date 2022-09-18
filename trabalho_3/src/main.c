@@ -49,9 +49,9 @@ void trataComunicacaoComServidor(void * params)
       sprintf(mensagem, "{\"temperatura\": %d, \"umidade\":%d}", get_temperatura(), get_umidade());
       mqtt_envia_mensagem("v1/devices/me/telemetry", mensagem);
 
-      sprintf(JsonAttributes, "{\"statusLed\": %d}", get_led_state());
+      sprintf(JsonAttributes, "{\"umidade\":%d,\"temperatura\":%d,\"statusLed\": %d}", get_umidade(), get_temperatura(), get_led_state());
       mqtt_envia_mensagem("v1/devices/me/attributes",JsonAttributes);
-      vTaskDelay(1000 / portTICK_PERIOD_MS);
+      vTaskDelay(3000 / portTICK_PERIOD_MS);
     }
   }
 }
