@@ -8,6 +8,8 @@
 #include "sdkconfig.h"
 #include "esp_log.h"
 #include "mqtt.h"
+#include "dht.h"
+#include "led.h"
 
 
 #define BUTTON_GPIO 0
@@ -21,6 +23,7 @@ extern struct memoria *data;
 extern xSemaphoreHandle conexaoMQTTSemaphore;
 
 int button_state_global = 0;
+int button_sensor = 0;
 
 void set_button_state(){
     gpio_pad_select_gpio(BUTTON_GPIO);
@@ -41,9 +44,21 @@ void set_button_state(){
             {
                 ESP_LOGI(TAG, "BUTTON PRESSED");
                 set_led_state();
-
+                button_sensor = !button_sensor;
             }
             xSemaphoreGive(conexaoMQTTSemaphore);
+        }
+        if (button_sensor){
+            char mensagem[50];
+            char JsonAttributes[500];
+            ESP_LOGI(TAG, "BUTTON SENSOR %d", button_sensor);
+            sensor();
+            sprintf(mensagem, "{\"temperatura\": %d, \"umidade\":%d}", get_temperatura(), get_umidade());
+            mqtt_envia_mensagem("v1/devices/me/telemetry", mensagem);
+
+            sprintf(JsonAttributes, "{\"umidade\":%d,\"temperatura\":%d,\"statusLed\": %d}", get_umidade(), get_temperatura(), get_led_state());
+            mqtt_envia_mensagem("v1/devices/me/attributes",JsonAttributes);
+            vTaskDelay(3000 / portTICK_PERIOD_MS);
         }
         vTaskDelay(150 / portTICK_PERIOD_MS);
     }

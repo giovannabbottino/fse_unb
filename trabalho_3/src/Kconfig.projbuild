@@ -1,5 +1,3 @@
-
-
 menu "Project Configuration"
 
     menu "WIFI Configuration"
@@ -22,21 +20,13 @@ menu "Project Configuration"
         help
             Set the Maximum retry to avoid station reconnecting to the AP unlimited when the AP is really inexistent.
 
-    menu "(FSE-CFG) Modo de Energia"
- 
-        choice ESP_ENERGY_MODE
-            prompt "Modo de consumo de energia da placa."
-            default NORMAL_MODE
-            help
-            Defines ESP energy consumption mode.
-                
-            config LOW_POWER_MODE
-                int "Modo bateria [1 - Ligado e 0 - Desligado]"
-                default 0
-        endchoice
-
     endmenu
 
-    endmenu
+    config ESP_ENERGY_MODE
+        string "Energy Mode (LOW_POWER_MODE or NORMAL_MODE)"
+        prompt "Modo de consumo de energia da placa (LOW_POWER_MODE or NORMAL_MODE)."
+        default "NORMAL_MODE"
+        help
+            Defines ESP energy consumption mode. LOW_POWER_MODE or NORMAL_MODE
 
 endmenu

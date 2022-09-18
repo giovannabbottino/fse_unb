@@ -138,12 +138,9 @@ CONFIG_PARTITION_TABLE_MD5=y
 CONFIG_ESP_WIFI_SSID="ALHN-3931 Oi Fibra 2.4G"
 CONFIG_ESP_WIFI_PASSWORD="2957392617"
 CONFIG_ESP_MAXIMUM_RETRY=30
-
-#
-# (FSE-CFG) Modo de Energia
-#
-# end of (FSE-CFG) Modo de Energia
 # end of WIFI Configuration
+
+CONFIG_ESP_ENERGY_MODE="LOW_POWER_MODE"
 # end of Project Configuration
 
 #

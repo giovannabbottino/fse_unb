@@ -20,6 +20,8 @@
 #include <nvs_component.h>
 #include "memoria.h"
 
+#define ENERGY_MODE  CONFIG_ESP_ENERGY_MODE
+
 xSemaphoreHandle conexaoWifiSemaphore;
 xSemaphoreHandle conexaoMQTTSemaphore;
 
@@ -81,7 +83,8 @@ void app_main(void)
     wifi_start();
 
     xTaskCreate(&conectadoWifi,  "Conexão ao MQTT", 4096, NULL, 1, NULL);
-    xTaskCreate(&trataComunicacaoComServidor, "Comunicação com Broker", 4096, NULL, 1, NULL);
     xTaskCreate(&set_button_state, "Botão ESP", 4096, NULL, 1, NULL);
-    // Red: 108 Green: 120 Blue: 109
+    if (strcmp(ENERGY_MODE, "NORMAL_MODE") == 0){
+      xTaskCreate(&trataComunicacaoComServidor, "Comunicação com Broker", 4096, NULL, 1, NULL);
+    }
 }
