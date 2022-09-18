@@ -13,6 +13,11 @@
 #define BUTTON_GPIO 0
 #define TAG "BUTTON"
 
+#include <nvs_component.h>
+#include "memoria.h"
+
+extern struct memoria *data;
+
 extern xSemaphoreHandle conexaoMQTTSemaphore;
 
 int button_state_global = 0;

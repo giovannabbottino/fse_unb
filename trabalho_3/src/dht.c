@@ -7,11 +7,14 @@
 #include "mqtt.h"
 #include "freertos/semphr.h"
 #include "driver/adc.h"
+
 #define TAG "DHT11"
 #define PIN GPIO_NUM_23
 
-int umidade = 0;
-int temperatura = 0;
+#include <nvs_component.h>
+#include "memoria.h"
+
+extern struct memoria *data;
 
 void setup_dht_11(){
     DHT11_init(PIN);
@@ -19,16 +22,16 @@ void setup_dht_11(){
 }
 
 void sensor(){
-    temperatura = DHT11_read().temperature;
-    ESP_LOGI(TAG, "Temperatura: %d", temperatura);
-    umidade = DHT11_read().humidity;
-    ESP_LOGI(TAG, "Umidade: %d", umidade);
+    data->temperatura = DHT11_read().temperature;
+    ESP_LOGI(TAG, "Temperatura: %d", data->temperatura);
+    data->umidade = DHT11_read().humidity;
+    ESP_LOGI(TAG, "Umidade: %d", data->umidade);
 }
 
 int get_umidade(){
-    return umidade;
+    return data->umidade;
 }
 
 int get_temperatura(){
-    return temperatura;
+    return data->temperatura;
 }

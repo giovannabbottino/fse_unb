@@ -17,8 +17,13 @@
 #include "dht.h"
 #include "button.h"
 
+#include <nvs_component.h>
+#include "memoria.h"
+
 xSemaphoreHandle conexaoWifiSemaphore;
 xSemaphoreHandle conexaoMQTTSemaphore;
+
+struct memoria *data;
 
 void conectadoWifi(void * params)
 {
@@ -41,10 +46,10 @@ void trataComunicacaoComServidor(void * params)
     while(true)
     {
       sensor();
-      sprintf(mensagem, "{\"temperatura\": %d}", get_temperatura());
+      sprintf(mensagem, "{\"temperatura\": %d, \"umidade\":%d}", get_temperatura(), get_umidade());
       mqtt_envia_mensagem("v1/devices/me/telemetry", mensagem);
 
-      sprintf(JsonAttributes, "{\"umidade\":%d,\"statusLed\": %d}", get_umidade(), get_led_state());
+      sprintf(JsonAttributes, "{\"statusLed\": %d}", get_led_state());
       mqtt_envia_mensagem("v1/devices/me/attributes",JsonAttributes);
       vTaskDelay(1000 / portTICK_PERIOD_MS);
     }
@@ -61,6 +66,14 @@ void app_main(void)
       ret = nvs_flash_init();
     }
     ESP_ERROR_CHECK(ret);
+
+    data = malloc(sizeof(data));
+    data->temperatura = 0;
+    data->umidade = 0;
+    data->red = 0;
+    data->green = 0;
+    data->blue = 0;
+    read_struct("DATA", &data, sizeof(data));
     
     conexaoWifiSemaphore = xSemaphoreCreateBinary();
     conexaoMQTTSemaphore = xSemaphoreCreateBinary();
@@ -70,4 +83,5 @@ void app_main(void)
     xTaskCreate(&conectadoWifi,  "Conexão ao MQTT", 4096, NULL, 1, NULL);
     xTaskCreate(&trataComunicacaoComServidor, "Comunicação com Broker", 4096, NULL, 1, NULL);
     xTaskCreate(&set_button_state, "Botão ESP", 4096, NULL, 1, NULL);
+    // Red: 108 Green: 120 Blue: 109
 }
