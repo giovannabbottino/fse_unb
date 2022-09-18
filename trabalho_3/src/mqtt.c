@@ -21,8 +21,6 @@
 #include "mqtt.h"
 
 #include "handler.h"
-#include "cJSON.h"
-
 #define TAG "MQTT"
 
 extern xSemaphoreHandle conexaoMQTTSemaphore;
@@ -57,18 +55,7 @@ static esp_err_t mqtt_event_handler_cb(esp_mqtt_event_handle_t event)
             printf("TOPIC=%.*s\r\n", event->topic_len, event->topic);
             printf("DATA=%.*s\r\n", event->data_len, event->data);
 
-            cJSON *json = cJSON_Parse(event->data);
-            cJSON *method = cJSON_GetObjectItem(json, "method");
-            char method_value[20];
-            strcpy(method_value, method->valuestring);
-            ESP_LOGI(TAG, "mode: %s", method_value);
-
-            cJSON *params = cJSON_GetObjectItem(json, "params");
-            char params_value[20];
-            strcpy(params_value, params->valuestring);
-            ESP_LOGI(TAG, "mode: %s", params_value);
-
-            handler_event_data(method_value, params_value);
+            handler_event_data(event->data);
             break;
         case MQTT_EVENT_ERROR:
             ESP_LOGI(TAG, "MQTT_EVENT_ERROR");
@@ -99,5 +86,5 @@ void mqtt_start()
 void mqtt_envia_mensagem(char * topico, char * mensagem)
 {
     int message_id = esp_mqtt_client_publish(client, topico, mensagem, 0, 1, 0);
-    ESP_LOGI(TAG, "Mensagem enviada, ID: %d", message_id);
+    ESP_LOGI(TAG, "Mensagem enviada, ID: %d MENSAGEM: %s", message_id, mensagem);
 }

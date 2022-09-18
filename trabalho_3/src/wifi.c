@@ -13,13 +13,12 @@
 #include "lwip/err.h"
 #include "lwip/sys.h"
 
-#define ESP_WIFI_SSID            CONFIG_ESP_WIFI_SSID
-#define ESP_WIFI_PASSWORD        CONFIG_ESP_WIFI_PASSWORD
-#define ESP_MAXIMUM_RETRY   CONFIG_ESP_MAXIMUM_RETRY
+#define WIFI_SSID      CONFIG_ESP_WIFI_SSID
+#define WIFI_PASS      CONFIG_ESP_WIFI_PASSWORD
+#define WIFI_MAXIMUM_RETRY  CONFIG_ESP_MAXIMUM_RETRY
 
 #define WIFI_CONNECTED_BIT BIT0
 #define WIFI_FAIL_BIT      BIT1
-
 
 #define TAG "Wifi"
 
@@ -34,7 +33,7 @@ static void event_handler(void* arg, esp_event_base_t event_base,
     if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_START) {
         esp_wifi_connect();
     } else if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_DISCONNECTED) {
-        if (s_retry_num < ESP_MAXIMUM_RETRY) {
+        if (s_retry_num < WIFI_MAXIMUM_RETRY) {
             esp_wifi_connect();
             s_retry_num++;
             ESP_LOGI(TAG, "retry to connect to the AP");
@@ -68,8 +67,8 @@ void wifi_start(){
 
     wifi_config_t wifi_config = {
         .sta = {
-            .ssid = ESP_WIFI_SSID,
-            .password = ESP_WIFI_PASSWORD
+            .ssid = WIFI_SSID,
+            .password = WIFI_PASS
         },
     };
     ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA) );
@@ -90,10 +89,10 @@ void wifi_start(){
      * happened. */
     if (bits & WIFI_CONNECTED_BIT) {
         ESP_LOGI(TAG, "connected to ap SSID:%s password:%s",
-                 ESP_WIFI_SSID, ESP_WIFI_PASSWORD);
+                 WIFI_SSID, WIFI_PASS);
     } else if (bits & WIFI_FAIL_BIT) {
         ESP_LOGI(TAG, "Failed to connect to SSID:%s, password:%s",
-                 ESP_WIFI_SSID, ESP_WIFI_PASSWORD);
+                 WIFI_SSID, WIFI_PASS);
     } else {
         ESP_LOGE(TAG, "UNEXPECTED EVENT");
     }

@@ -4,6 +4,6 @@
 #include "led.h"
 #include "rgb_led.h"
 
-void handler_event_data(char * json_str, char * params);
+void handler_event_data(char * data);
 
 #endif

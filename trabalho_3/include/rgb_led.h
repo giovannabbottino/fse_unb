@@ -23,4 +23,8 @@ void set_red(uint8_t value);
 void set_green(uint8_t value);
 void set_blue(uint8_t value);
 
+int get_red();
+int get_green();
+int get_blue();
+
 #endif

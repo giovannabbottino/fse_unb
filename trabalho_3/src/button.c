@@ -27,7 +27,7 @@ void set_button_state(){
     while (1)
     {
         int button_state = gpio_get_level(BUTTON_GPIO);
-        if (button_state != button_state_global && xSemaphoreTake(conexaoMQTTSemaphore, portMAX_DELAY)){
+        if (button_state != button_state_global){
             button_state_global = button_state;
             if (button_state){
                 ESP_LOGI(TAG, "BUTTON RELEASED");

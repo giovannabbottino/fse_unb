@@ -4,7 +4,7 @@
 void setup_dht_11();
 void sensor();
 
-float get_umidade();
-float get_temperatura();
+int get_umidade();
+int get_temperatura();
 
 #endif

@@ -12,7 +12,7 @@
 #include "esp_log.h"
 
 #define BLINK_GPIO 2
-#define TAG "LED"
+#define TAG "LED_RGB"
 
 bool g_pwm_init_handle = false;
 uint8_t red = 0;
@@ -20,7 +20,6 @@ uint8_t green = 0;
 uint8_t blue = 0;
 
 static void rgb_led_pwm_init(void){
-    int rgb_ch;
     //Red
     ledc_ch[0].channel      = LEDC_CHANNEL_0;
     ledc_ch[0].gpio         = RGB_LED_RED_GPIO;
@@ -62,11 +61,11 @@ static void rgb_led_pwm_init(void){
     ledc_set_duty(ledc_ch[0].mode, ledc_ch[0].channel, red);
 	ledc_update_duty(ledc_ch[0].mode, ledc_ch[0].channel);
 
-    ledc_set_duty(ledc_ch[0].mode, ledc_ch[0].channel, green);
-	ledc_update_duty(ledc_ch[0].mode, ledc_ch[0].channel);
+    ledc_set_duty(ledc_ch[1].mode, ledc_ch[1].channel, green);
+	ledc_update_duty(ledc_ch[1].mode, ledc_ch[1].channel);
 
-    ledc_set_duty(ledc_ch[0].mode, ledc_ch[0].channel, blue);
-	ledc_update_duty(ledc_ch[0].mode, ledc_ch[0].channel);
+    ledc_set_duty(ledc_ch[2].mode, ledc_ch[2].channel, blue);
+	ledc_update_duty(ledc_ch[2].mode, ledc_ch[2].channel);
 
     g_pwm_init_handle = true;
 }
@@ -78,7 +77,7 @@ void set_red(uint8_t value){
     }
     ledc_set_duty(ledc_ch[0].mode, ledc_ch[0].channel, red);
 	ledc_update_duty(ledc_ch[0].mode, ledc_ch[0].channel);
-    ESP_LOGI(TAG, "Red: %d", red);
+    ESP_LOGI(TAG, "Red: %d Green: %d Blue: %d", red, green, blue);
 }
 
 void set_green(uint8_t value){
@@ -86,9 +85,9 @@ void set_green(uint8_t value){
     if(!g_pwm_init_handle){
         rgb_led_pwm_init();
     }
-    ledc_set_duty(ledc_ch[0].mode, ledc_ch[0].channel, green);
-	ledc_update_duty(ledc_ch[0].mode, ledc_ch[0].channel);
-    ESP_LOGI(TAG, "Green: %d", green);
+    ledc_set_duty(ledc_ch[1].mode, ledc_ch[1].channel, green);
+	ledc_update_duty(ledc_ch[1].mode, ledc_ch[1].channel);
+    ESP_LOGI(TAG, "Red: %d Green: %d Blue: %d", red, green, blue);
 }
 
 void set_blue(uint8_t value){
@@ -96,8 +95,19 @@ void set_blue(uint8_t value){
     if(!g_pwm_init_handle){
         rgb_led_pwm_init();
     }
-    ledc_set_duty(ledc_ch[0].mode, ledc_ch[0].channel, blue);
-	ledc_update_duty(ledc_ch[0].mode, ledc_ch[0].channel);
-    ESP_LOGI(TAG, "Blue: %d", blue);
+    ledc_set_duty(ledc_ch[2].mode, ledc_ch[2].channel, blue);
+	ledc_update_duty(ledc_ch[2].mode, ledc_ch[2].channel);
+    ESP_LOGI(TAG, "Red: %d Green: %d Blue: %d", red, green, blue);
 }
 
+int get_red(){
+    return red;
+}
+
+int get_green(){
+    return green;
+}
+
+int get_blue(){
+    return blue;
+}
