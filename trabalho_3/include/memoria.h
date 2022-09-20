@@ -3,8 +3,7 @@
 
 typedef struct memoria
 {
-    int temperatura;
-    int umidade;
+    int led;
     int red;
     int green;
     int blue;

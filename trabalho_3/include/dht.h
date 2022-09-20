@@ -1,10 +1,11 @@
 #ifndef __DHT_H__
 #define __DHT_H__
 
-void setup_dht_11();
-void sensor();
+void dht_11_setup();
+void dht_11_run();
 
-int get_umidade();
-int get_temperatura();
+void dth_11_envia_menssagem();
+int dht_11_get_umidade();
+int dht_11_get_temperatura();
 
 #endif

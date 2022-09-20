@@ -6,26 +6,55 @@
 #include "sdkconfig.h"
 #include "esp_log.h"
 #include "led.h"
+#include <stdbool.h>
 
-#define BLINK_GPIO 2
 #define TAG "LED"
 
-#define ENERGY_MODE  CONFIG_ESP_ENERGY_MODE
+#include "memoria.h"
 
-int state_global = 0;
+extern struct memoria *data;
 
-void set_led_state(){
-    if (strcmp(ENERGY_MODE, "NORMAL_MODE") == 0){
-        state_global = !state_global;
-        gpio_pad_select_gpio(BLINK_GPIO);
-        gpio_set_direction(BLINK_GPIO, GPIO_MODE_OUTPUT);
+bool g_setup_led = false;
+void led_setup(){
+    ledc_timer_config_t timer_config = {
+        .speed_mode = LEDC_LOW_SPEED_MODE,
+        .duty_resolution = LEDC_TIMER_8_BIT,
+        .timer_num = LEDC_TIMER_0,
+        .freq_hz = 1000,
+        .clk_cfg = LEDC_AUTO_CLK};
+    ledc_timer_config(&timer_config);
 
-        ESP_LOGI(TAG, "LED: %d", state_global);
+    // Configuração do Canal
+    ledc_channel_config_t channel_config = {
+        .gpio_num = 2,
+        .speed_mode = LEDC_LOW_SPEED_MODE,
+        .channel = LEDC_CHANNEL_0,
+        .timer_sel = LEDC_TIMER_0,
+        .duty = 0,
+        .hpoint = 0};
+    ledc_channel_config(&channel_config);
+    g_setup_led = true;
+}
 
-        gpio_set_level(BLINK_GPIO, state_global);
+void led_set_state(int state){
+    if(!g_setup_led){
+        led_setup();
+    }
+    ESP_LOGI(TAG, "LED: %d", state);
+
+    if (state <= data.led){
+        for (int i = data.led; i < state; i++){
+            ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0, i);
+            ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0);
+        }
+    } else {
+        for (int i = state; i > data.led; i--){
+            ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0, i);
+            ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_0);
+        }
     }
 }
 
-int get_led_state(){
-    return state_global;
+int led_get_state(){
+    return data.led;
 }

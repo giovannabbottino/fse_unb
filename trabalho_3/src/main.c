@@ -41,26 +41,18 @@ void conectadoWifi(void * params)
 
 void trataComunicacaoComServidor(void * params)
 {
-  char mensagem[50];
-  char JsonAttributes[500];
   if(xSemaphoreTake(conexaoMQTTSemaphore, portMAX_DELAY))
   {
     while(true)
     {
-      sensor();
-      sprintf(mensagem, "{\"temperatura\": %d, \"umidade\":%d}", get_temperatura(), get_umidade());
-      mqtt_envia_mensagem("v1/devices/me/telemetry", mensagem);
-
-      sprintf(JsonAttributes, "{\"umidade\":%d,\"temperatura\":%d,\"statusLed\": %d}", get_umidade(), get_temperatura(), get_led_state());
-      mqtt_envia_mensagem("v1/devices/me/attributes",JsonAttributes);
-      vTaskDelay(3000 / portTICK_PERIOD_MS);
+      dht_11_run();
     }
   }
 }
 
 void app_main(void)
 {
-    setup_dht_11();
+    dht_11_setup();
     // Inicializa o NVS
     esp_err_t ret = nvs_flash_init();
     if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
@@ -83,7 +75,7 @@ void app_main(void)
     wifi_start();
 
     xTaskCreate(&conectadoWifi,  "Conexão ao MQTT", 4096, NULL, 1, NULL);
-    xTaskCreate(&set_button_state, "Botão ESP", 4096, NULL, 1, NULL);
+    xTaskCreate(&button_set_state, "Botão ESP", 4096, NULL, 1, NULL);
     if (strcmp(ENERGY_MODE, "NORMAL_MODE") == 0){
       xTaskCreate(&trataComunicacaoComServidor, "Comunicação com Broker", 4096, NULL, 1, NULL);
     }

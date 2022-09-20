@@ -19,12 +19,12 @@ typedef struct
 
 ledc_info_t ledc_ch[RGB_LED_CHANNEL_NUM];
 
-void set_red(uint8_t value);
-void set_green(uint8_t value);
-void set_blue(uint8_t value);
+void rgb_led_set_red(uint8_t value);
+void rgb_led_set_green(uint8_t value);
+void rgb_led_set_blue(uint8_t value);
 
-int get_red();
-int get_green();
-int get_blue();
+int rgb_led_get_red();
+int rgb_led_get_green();
+int rgb_led_get_blue();
 
 #endif

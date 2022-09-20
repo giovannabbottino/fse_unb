@@ -19,21 +19,21 @@ void handler_event_data(char * data){
     ESP_LOGI(TAG, "params: %d", params_value);
 
     if (strcmp(method_value, "ligaLed") == 0){
-        /* {"method":"ligaLed","params":1} */
-        set_led_state();
+        /* {"method":"ligaLed","params":1-100} */
+        led_set_state(params_value);
     }else if (strcmp(method_value, "redValue") == 0){
          /* {"method":"redValue","params":"0-255"} */
-        set_red(params_value);
+        rgb_led_set_red(params_value);
     }else if (strcmp(method_value, "greenValue") == 0){
         /* {"method":"greenValue","params":"0-255"} */
-        set_green(params_value);
+        rgb_led_set_green(params_value);
     }else if (strcmp(method_value, "blueValue") == 0){
         /* {"method":"blueValue","params":"0-255"} */
-        set_blue(params_value);
+        rgb_led_set_blue(params_value);
     }else if (strcmp(method_value, "getValue") == 0){
         /* {"method":"getValue","params":""} */
         char JsonAttributes[500];
-        sprintf(JsonAttributes, "{\"statusLed\": %d, \"RED\": %d, \"GREEN\": %d, \"BLUE\": %d}", get_led_state(), get_red(), get_green(), get_blue());
+        sprintf(JsonAttributes, "{\"statusLed\": %d, \"RED\": %d, \"GREEN\": %d, \"BLUE\": %d}", led_get_state(), rgb_led_get_red(), rgb_led_get_green(), rgb_led_get_blue());
         mqtt_envia_mensagem("v1/devices/me/attributes",JsonAttributes);
     }
 }

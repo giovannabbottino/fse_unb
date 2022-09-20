@@ -76,7 +76,7 @@ static void rgb_led_pwm_init(void){
     }
 }
 
-void set_red(uint8_t value){
+void rgb_led_set_red(uint8_t value){
     data->red = value;
     if(!g_pwm_init_handle){
         rgb_led_pwm_init();
@@ -86,7 +86,7 @@ void set_red(uint8_t value){
     ESP_LOGI(TAG, "Red: %d Green: %d Blue: %d", data->red, data->green, data->blue);
 }
 
-void set_green(uint8_t value){
+void rgb_led_set_green(uint8_t value){
     data->green = value;
     if(!g_pwm_init_handle){
         rgb_led_pwm_init();
@@ -96,7 +96,7 @@ void set_green(uint8_t value){
     ESP_LOGI(TAG, "Red: %d Green: %d Blue: %d", data->red, data->green, data->blue);
 }
 
-void set_blue(uint8_t value){
+void rgb_led_set_blue(uint8_t value){
     data->blue = value;
     if(!g_pwm_init_handle){
         rgb_led_pwm_init();
@@ -106,14 +106,14 @@ void set_blue(uint8_t value){
     ESP_LOGI(TAG, "Red: %d Green: %d Blue: %d", data->red, data->green, data->blue);
 }
 
-int get_red(){
+int rgb_led_get_red(){
     return data->red;
 }
 
-int get_green(){
+int rgb_led_get_green(){
     return data->green;
 }
 
-int get_blue(){
+int rgb_led_get_blue(){
     return data->blue;
 }

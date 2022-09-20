@@ -1,8 +1,9 @@
 #ifndef __LED_H__
 #define __LED_H__
 
-void set_led_state();
+void led_setup();
+void led_set_state(int state);
 
-int get_led_state();
+int led_get_state();
 
 #endif
