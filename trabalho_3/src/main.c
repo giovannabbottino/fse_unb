@@ -76,7 +76,5 @@ void app_main(void)
 
     xTaskCreate(&conectadoWifi,  "Conexão ao MQTT", 4096, NULL, 1, NULL);
     xTaskCreate(&button_set_state, "Botão ESP", 4096, NULL, 1, NULL);
-    if (strcmp(ENERGY_MODE, "NORMAL_MODE") == 0){
-      xTaskCreate(&trataComunicacaoComServidor, "Comunicação com Broker", 4096, NULL, 1, NULL);
-    }
+    xTaskCreate(&trataComunicacaoComServidor, "Comunicação com Broker", 4096, NULL, 1, NULL);
 }

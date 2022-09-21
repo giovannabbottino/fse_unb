@@ -35,7 +35,8 @@ void dht_11_run(){
     int nova_umidade = DHT11_read().humidity;
     ESP_LOGI(TAG, "Umidade: %d", nova_umidade);
 
-    if ( nova_temperatura >= temperatura * 0.8 && nova_umidade >= umidade * 0.8){
+    if ( (nova_temperatura >= temperatura * 0.8 && nova_temperatura <= temperatura * 1.8 ) 
+    && (nova_umidade >= umidade * 0.8 && nova_umidade <= umidade * 1.2)){
         temperatura = nova_temperatura;
         umidade = nova_umidade;
         dth_11_envia_menssagem();
