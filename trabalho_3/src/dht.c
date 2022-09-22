@@ -35,12 +35,12 @@ void dht_11_run(){
     int nova_umidade = DHT11_read().humidity;
     ESP_LOGI(TAG, "Umidade: %d", nova_umidade);
 
-    if ( (nova_temperatura >= temperatura * 0.8 && nova_temperatura <= temperatura * 1.8 ) 
-    && (nova_umidade >= umidade * 0.8 && nova_umidade <= umidade * 1.2)){
+    if (nova_temperatura != -1 && nova_umidade != -1){
         temperatura = nova_temperatura;
         umidade = nova_umidade;
         dth_11_envia_menssagem();
     }
+    vTaskDelay(10000 / portTICK_PERIOD_MS);
 }
 
 void dth_11_envia_menssagem(){
@@ -50,9 +50,8 @@ void dth_11_envia_menssagem(){
     sprintf(mensagem, "{\"temperatura\": %d, \"umidade\":%d}", dht_11_get_temperatura(), dht_11_get_umidade());
     mqtt_envia_mensagem("v1/devices/me/telemetry", mensagem);
 
-    sprintf(JsonAttributes, "{\"umidade\":%d,\"temperatura\":%d,\"statusLed\": %d}", dht_11_get_umidade(), dht_11_get_temperatura(), led_get_state());
+    sprintf(JsonAttributes, "{\"temperatura\": %d, \"umidade\":%d}", dht_11_get_temperatura(), dht_11_get_umidade());
     mqtt_envia_mensagem("v1/devices/me/attributes",JsonAttributes);
-    vTaskDelay(3000 / portTICK_PERIOD_MS);
 }
 
 int dht_11_get_umidade(){

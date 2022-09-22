@@ -15,17 +15,16 @@ menu "Project Configuration"
                 WiFi password (WPA or WPA2).
         
         config ESP_MAXIMUM_RETRY
-        int "Maximum retry"
-        default 30
-        help
-            Set the Maximum retry to avoid station reconnecting to the AP unlimited when the AP is really inexistent.
+            int "Maximum retry"
+            default 30
+            help
+                Set the Maximum retry to avoid station reconnecting to the AP unlimited when the AP is really inexistent.
 
     endmenu
 
     config ESP_ENERGY_MODE
-        string "Energy Mode (LOW_POWER_MODE or NORMAL_MODE)"
-        prompt "Modo de consumo de energia da placa (LOW_POWER_MODE or NORMAL_MODE)."
-        default "NORMAL_MODE"
+        int "Battery mode ON/OFF (1, 0)"
+        default 0
         help
             Defines ESP energy consumption mode. LOW_POWER_MODE or NORMAL_MODE
 

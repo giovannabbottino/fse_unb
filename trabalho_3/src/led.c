@@ -8,6 +8,7 @@
 #include "esp_log.h"
 #include "led.h"
 #include <stdbool.h>
+#include "mqtt.h"
 
 #define TAG "LED"
 
@@ -62,8 +63,16 @@ void led_set_state(int state){
         }
     }
     data->led = state;
+    led_envia_menssagem();
+}
+
+void led_envia_menssagem(){
+    char JsonAttributes[500];
+    
+    sprintf(JsonAttributes, "{\"statusLed\": %d}", led_get_state());
+    mqtt_envia_mensagem("v1/devices/me/attributes",JsonAttributes);
 }
 
 int led_get_state(){
-    return data->led;
+    return data->led > 0;
 }

@@ -7,10 +7,10 @@
 #include "driver/gpio.h"
 #include "sdkconfig.h"
 #include "esp_log.h"
-#include "mqtt.h"
-#include "dht.h"
-#include "led.h"
 
+#include "led.h"
+#include "rgb_led.h"
+#include "mqtt.h"
 
 #define BUTTON_GPIO 0
 #define TAG "BUTTON"
@@ -38,7 +38,6 @@ void button_set_state(){
             else
             {
                 ESP_LOGI(TAG, "BUTTON PRESSED");
-                led_set_state();
                 button_sensor = !button_sensor;
             }
             xSemaphoreGive(conexaoMQTTSemaphore);
@@ -46,9 +45,14 @@ void button_set_state(){
         if (button_sensor){
             ESP_LOGI(TAG, "BUTTON SENSOR %d", button_sensor);
 
-            dht_11_run();
-
-            vTaskDelay(3000 / portTICK_PERIOD_MS);
+            char JsonAttributes[500];
+            sprintf(JsonAttributes, "{\"statusLed\": %d, \"RED\": %d, \"GREEN\": %d, \"BLUE\": %d}", 
+                    led_get_state(), 
+                    rgb_led_get_red(), 
+                    rgb_led_get_green(), 
+                    rgb_led_get_blue());
+            mqtt_envia_mensagem("v1/devices/me/attributes",JsonAttributes);
+            vTaskDelay(1000 / portTICK_PERIOD_MS);
         }
         vTaskDelay(150 / portTICK_PERIOD_MS);
     }

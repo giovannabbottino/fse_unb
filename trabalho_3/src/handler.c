@@ -3,10 +3,13 @@
 #include <string.h>
 #include "esp_log.h"
 #include "cJSON.h"
+
+#include "led.h"
+#include "rgb_led.h"
 #include "mqtt.h"
 
 #define TAG "HANDLER"
-
+#define ENERGY_MODE  CONFIG_ESP_ENERGY_MODE
 void handler_event_data(char * data){
     cJSON *json = cJSON_Parse(data);
     cJSON *method = cJSON_GetObjectItem(json, "method");
@@ -18,7 +21,7 @@ void handler_event_data(char * data){
     int params_value = params->valueint;
     ESP_LOGI(TAG, "params: %d", params_value);
 
-    if (strcmp(method_value, "ligaLed") == 0){
+    if (strcmp(method_value, "ligaLed") == 0 && ENERGY_MODE == 0){
         /* {"method":"ligaLed","params":1-100} */
         led_set_state(params_value);
     }else if (strcmp(method_value, "redValue") == 0){
@@ -33,7 +36,11 @@ void handler_event_data(char * data){
     }else if (strcmp(method_value, "getValue") == 0){
         /* {"method":"getValue","params":""} */
         char JsonAttributes[500];
-        sprintf(JsonAttributes, "{\"statusLed\": %d, \"RED\": %d, \"GREEN\": %d, \"BLUE\": %d}", led_get_state(), rgb_led_get_red(), rgb_led_get_green(), rgb_led_get_blue());
+        sprintf(JsonAttributes, "{\"statusLed\": %d, \"RED\": %d, \"GREEN\": %d, \"BLUE\": %d}", 
+                    led_get_state(), 
+                    rgb_led_get_red(), 
+                    rgb_led_get_green(), 
+                    rgb_led_get_blue());
         mqtt_envia_mensagem("v1/devices/me/attributes",JsonAttributes);
     }
 }

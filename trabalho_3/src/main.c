@@ -17,7 +17,6 @@
 #include "dht.h"
 #include "button.h"
 
-#include <nvs_component.h>
 #include "memoria.h"
 
 #define ENERGY_MODE  CONFIG_ESP_ENERGY_MODE
@@ -62,12 +61,10 @@ void app_main(void)
     ESP_ERROR_CHECK(ret);
 
     data = malloc(sizeof(data));
-    data->temperatura = 0;
-    data->umidade = 0;
     data->red = 0;
     data->green = 0;
     data->blue = 0;
-    read_struct("DATA", &data, sizeof(data));
+    data->led = 0;
     
     conexaoWifiSemaphore = xSemaphoreCreateBinary();
     conexaoMQTTSemaphore = xSemaphoreCreateBinary();
@@ -76,5 +73,7 @@ void app_main(void)
 
     xTaskCreate(&conectadoWifi,  "Conexão ao MQTT", 4096, NULL, 1, NULL);
     xTaskCreate(&button_set_state, "Botão ESP", 4096, NULL, 1, NULL);
-    xTaskCreate(&trataComunicacaoComServidor, "Comunicação com Broker", 4096, NULL, 1, NULL);
+    if(ENERGY_MODE == 0){
+      xTaskCreate(&trataComunicacaoComServidor, "Comunicação com Broker", 4096, NULL, 1, NULL);
+    }
 }
